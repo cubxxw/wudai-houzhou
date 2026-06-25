@@ -1,0 +1,288 @@
+# yaml-language-server: $schema=./quartz/plugins/quartz-plugins.schema.json
+configuration:
+  pageTitle: 郭威·乱世为龙
+  pageTitleSuffix: " · 五代后周史·双链阅读"
+  enableSPA: true
+  enablePopovers: true
+  analytics:
+    provider: null
+  locale: zh-CN
+  baseUrl: localhost:8080
+  ignorePatterns:
+    - private
+    - templates
+    - .obsidian
+    - site
+    - .playwright-mcp
+  theme:
+    fontOrigin: local
+    cdnCaching: true
+    typography:
+      header: ZCOOL XiaoWei
+      body: Noto Serif SC
+      code: JetBrains Mono
+    colors:
+      # 亮色模式 = 米白宣纸 + 古铜 + 朱砂（给读者真实"换纸"选择）
+      lightMode:
+        light: "#f4ebd7"       # 米白宣纸底
+        lightgray: "#e7dabf"   # 旧纸边
+        gray: "#a89378"        # 古铜浅
+        darkgray: "#574a3a"    # 古铜深（次要文字）
+        dark: "#2a2826"        # 碑石深棕（正文字）
+        secondary: "#7a5a30"   # 古铜（链接/title）
+        tertiary: "#8a3a3a"    # 朱砂红（强调）
+        highlight: rgba(138, 58, 58, 0.10)
+        textHighlight: "#8a3a3a33"
+      darkMode:
+        light: "#1a1816"
+        lightgray: "#2d2a27"
+        gray: "#5a544d"
+        darkgray: "#a89e88"
+        dark: "#c8c0a9"
+        secondary: "#b08d57"
+        tertiary: "#8a3a3a"
+        highlight: rgba(176, 141, 87, 0.12)
+        textHighlight: "#b08d5755"
+plugins:
+  - source: github:quartz-community/created-modified-date
+    enabled: true
+    options:
+      defaultDateType: modified
+      priority:
+        - frontmatter
+        - git
+        - filesystem
+    order: 10
+  - source: github:quartz-community/syntax-highlighting
+    enabled: false  # 本站 markdown 无代码块（grep ``` 0 命中），禁用以省 CSS+JS
+    options:
+      theme:
+        light: github-light
+        dark: github-dark
+      keepBackground: false
+    order: 20
+  - source: github:quartz-community/obsidian-flavored-markdown
+    enabled: true
+    options:
+      enableInHtmlEmbed: false
+      enableCheckbox: true
+    order: 30
+  - source: github:quartz-community/github-flavored-markdown
+    enabled: true
+    order: 40
+  - source: github:quartz-community/table-of-contents
+    enabled: true
+    order: 50
+    layout:
+      position: right
+      priority: 30
+  - source: github:quartz-community/crawl-links
+    enabled: true
+    options:
+      markdownLinkResolution: shortest
+    order: 60
+  - source: github:quartz-community/description
+    enabled: true
+    order: 70
+  - source: github:quartz-community/latex
+    enabled: false  # 本站无数学公式，禁用以省 copy-tex.min.js
+    options:
+      renderEngine: katex
+    order: 80
+  - source: github:quartz-community/citations
+    enabled: false
+    order: 85
+  - source: github:quartz-community/hard-line-breaks
+    enabled: false
+    order: 90
+  - source: github:quartz-community/ox-hugo
+    enabled: false
+    order: 91
+  - source: github:quartz-community/roam
+    enabled: false
+    order: 92
+  - source: github:quartz-community/fonts
+    enabled: false  # 本站 custom.scss 用 Noto Serif SC + 系统 fallback，不需要 quartz 默认主题字体（Schibsted Grotesk / Source Sans）
+  - source: github:quartz-community/remove-draft
+    enabled: false  # 本站无 draft frontmatter（0 命中），禁用以省 plugin overhead
+  - source: github:quartz-community/explicit-publish
+    enabled: false
+  - source: github:quartz-community/alias-redirects
+    enabled: true
+  - source: github:quartz-community/content-index
+    enabled: true
+    options:
+      enableSiteMap: true
+      enableRSS: true
+      rssLimit: 20
+      rssFullHtml: false  # 实测 RSS items 都是 tag/folder 聚合页无 richContent；开启它只会让 contentIndex 多 324KB 无用 richContent
+      description: "郭威·乱世为龙 —— 后周太祖郭威传。一部以「兵强马壮者为之」的五代乱世为底色，写一个颈刺飞雀的潞州孤儿，如何走过出身、佐命、灭门、夺鼎、为君的一生。133 个历史专名注释，五代后周史·双链阅读。"
+      rssRecentNotesText: "最近更新"
+      # rssLastFewNotesText 是一个函数 (count) => string，YAML 不支持函数，故省略用默认
+  - source: github:quartz-community/favicon
+    enabled: true
+  - source: github:quartz-community/og-image
+    enabled: false  # 本站已手工创建 /static/og-image.png（1200×675 朱印封面）；禁用 plugin 后所有页面用同一封面，节省 ~3MB 静态资源
+  - source: github:quartz-community/cname
+    enabled: true
+  - source: github:quartz-community/canvas-page
+    enabled: false  # 本站无 Obsidian Canvas 文件
+  - source: github:quartz-community/content-page
+    enabled: true
+  - source: github:quartz-community/folder-page
+    enabled: true
+  - source: github:quartz-community/tag-page
+    enabled: true
+  - source: github:quartz-community/explorer
+    enabled: true
+    layout:
+      position: left
+      priority: 50
+  - source: github:quartz-community/graph
+    enabled: true
+    layout:
+      position: right
+      priority: 10
+  - source: github:quartz-community/search
+    enabled: true
+    layout:
+      position: left
+      priority: 20
+      group: toolbar
+      groupOptions:
+        grow: true
+  - source: github:quartz-community/backlinks
+    enabled: true
+    layout:
+      position: right
+      priority: 50
+  - source: github:quartz-community/article-title
+    enabled: true
+    layout:
+      position: beforeBody
+      priority: 10
+  - source: github:quartz-community/content-meta
+    enabled: true
+    layout:
+      position: beforeBody
+      priority: 20
+  - source: github:quartz-community/tag-list
+    enabled: false
+    layout:
+      position: beforeBody
+      priority: 30
+  - source: github:quartz-community/page-title
+    enabled: true
+    layout:
+      position: left
+      priority: 10
+  - source: github:quartz-community/darkmode
+    enabled: true
+    layout:
+      position: left
+      priority: 30
+      group: toolbar
+  - source: github:quartz-community/reader-mode
+    enabled: true
+    layout:
+      position: left
+      priority: 35
+      group: toolbar
+  - source: github:quartz-community/breadcrumbs
+    enabled: true
+    layout:
+      position: beforeBody
+      priority: 5
+      condition: not-index
+  - source: github:quartz-community/comments
+    enabled: false
+    options:
+      provider: giscus
+      options: {}
+    layout:
+      position: afterBody
+      priority: 10
+  - source: github:quartz-community/footer
+    enabled: true
+    options:
+      links:
+        GitHub: https://github.com/jackyzha0/quartz
+        Discord Community: https://discord.gg/cRFFHYye7t
+  - source: github:quartz-community/recent-notes
+    enabled: false
+  - source: github:quartz-community/spacer
+    enabled: true
+    options: {}
+    order: 25
+    layout:
+      position: left
+      priority: 25
+      display: mobile-only
+  - source: github:quartz-community/bases-page
+    enabled: false  # 本站无 Obsidian Bases 数据库
+    options: {}
+    order: 50
+  - source: github:quartz-community/note-properties
+    enabled: true
+    options:
+      includeAll: false
+      includedProperties:
+        - description
+        - tags
+        - aliases
+      excludedProperties: []
+      hidePropertiesView: false
+      delimiters: ---
+      language: yaml
+    order: 5
+    layout:
+      position: beforeBody
+      priority: 15
+      display: all
+  - source: github:quartz-community/unlisted-pages
+    enabled: false  # 本站无 unlisted 页面
+    options: {}
+    order: 45
+  - source: github:quartz-community/encrypted-pages
+    enabled: false  # 本站无加密页面
+    options:
+      iterations: 600000
+      passwordField: password
+      unlistWhenEncrypted: false
+      outputPath: static/encryptedContentIndex.json
+    order: 900
+    layout:
+      position: body
+      priority: 100
+      display: all
+  - source: github:quartz-community/stacked-pages
+    enabled: false
+    layout:
+      position: afterBody
+      priority: 50
+      display: all
+layout:
+  groups:
+    toolbar:
+      priority: 35
+      direction: row
+      gap: 0.5rem
+  byPageType:
+    "404":
+      positions:
+        beforeBody: []
+        left: []
+        right: []
+    content: {}
+    folder:
+      exclude:
+        - reader-mode
+      positions:
+        right: []
+    tag:
+      exclude:
+        - reader-mode
+      positions:
+        right: []
+    canvas: {}
+    bases: {}

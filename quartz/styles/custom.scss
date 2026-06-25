@@ -1,3 +1,3477 @@
 @use "./variables.scss" as *;
 
-// put your custom CSS here!
+// ─────────────────────────────────────────────────────────────
+// 唐宋碑拓 · 金石气 · 沉浸式历史阅读样式
+// 底色：碑石灰 #2a2826 / 字色：碑文米白 #d4cdb8 / 强调：古铜 #b08d57 / 朱砂：#8a3a3a
+// ─────────────────────────────────────────────────────────────
+
+:root {
+  --bodyFont: "Noto Serif SC", "LXGW WenKai", "Songti SC", "STSong", "SimSun", serif !important;
+  --headerFont: "ZCOOL XiaoWei", "Ma Shan Zheng", "Noto Serif SC", "STKaiti", "KaiTi", serif !important;
+  --codeFont: "JetBrains Mono", "Fira Code", ui-monospace, monospace !important;
+  --inkRed: #8a3a3a;
+  --bronze: #b08d57;
+  --paperMist: #d4cdb8;       // 暗色默认值（米白纸雾）
+  --steleDark: #2a2826;
+}
+
+// 亮色模式：把 --paperMist 反转为深棕（让原本"米白文字在深底"的位置变成"深字在米白底"）
+:root[saved-theme="light"] {
+  --paperMist: #2a2826;       // 米白底上用深棕字
+  --bronze: #7a5a30;          // 古铜深一档
+}
+
+// ─── 全站底层：拓片斑驳质感 ──────────────────────────────
+html, body {
+  font-family: var(--bodyFont);
+  background-color: var(--light);
+  background-image:
+    radial-gradient(ellipse 1px 1px at 23% 17%, rgba(212, 205, 184, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 1px 1px at 67% 38%, rgba(212, 205, 184, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse 1.5px 1px at 41% 71%, rgba(212, 205, 184, 0.035) 0%, transparent 50%),
+    radial-gradient(ellipse 1px 1.5px at 82% 84%, rgba(176, 141, 87, 0.025) 0%, transparent 50%),
+    radial-gradient(ellipse 600px 400px at 15% 25%, rgba(176, 141, 87, 0.025) 0%, transparent 70%),
+    radial-gradient(ellipse 800px 500px at 85% 75%, rgba(138, 58, 58, 0.015) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 700px at 50% 50%, rgba(212, 205, 184, 0.012) 0%, transparent 60%);
+  background-attachment: fixed;
+  background-size: 240px 240px, 320px 320px, 280px 280px, 360px 360px, 100% 100%, 100% 100%, 100% 100%;
+}
+
+// 亮色模式：背景斑驳质感用深棕雾点叠在米白底（碑拓气质保留）
+:root[saved-theme="light"] html,
+:root[saved-theme="light"] body {
+  background-image:
+    radial-gradient(ellipse 1px 1px at 23% 17%, rgba(42, 40, 38, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 1px 1px at 67% 38%, rgba(42, 40, 38, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 1.5px 1px at 41% 71%, rgba(42, 40, 38, 0.045) 0%, transparent 50%),
+    radial-gradient(ellipse 1px 1.5px at 82% 84%, rgba(122, 90, 48, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 600px 400px at 15% 25%, rgba(122, 90, 48, 0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 800px 500px at 85% 75%, rgba(138, 58, 58, 0.02) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 700px at 50% 50%, rgba(42, 40, 38, 0.015) 0%, transparent 60%) !important;
+}
+
+// ─── 正文：夜读字距 + 墨色 ──────────────────────────────
+article {
+  font-size: 1.08rem;
+  line-height: 2.05;
+  letter-spacing: 0.03em;
+  text-align: justify;
+  hanging-punctuation: allow-end;
+  color: var(--dark);
+}
+
+article p,
+article li,
+article blockquote {
+  text-indent: 0;
+  margin: 1.2em 0;
+  line-height: 2.05;
+  letter-spacing: 0.03em;
+}
+
+article > p:first-of-type::first-letter {
+  font-family: var(--headerFont);
+  font-size: 2.4em;
+  color: var(--bronze);
+  float: left;
+  line-height: 0.95;
+  margin: 0.1em 0.12em 0 0;
+  padding: 0.05em 0.1em 0 0;
+  font-weight: 500;
+}
+
+// ─── 引文：碑刻凹陷感 ───────────────────────────────────
+article blockquote {
+  border-left: 3px double var(--bronze);
+  border-right: 1px solid rgba(176, 141, 87, 0.2);
+  background: linear-gradient(
+    to right,
+    rgba(176, 141, 87, 0.05) 0%,
+    rgba(176, 141, 87, 0.02) 100%
+  );
+  padding: 0.9em 1.4em;
+  font-style: normal;
+  color: var(--darkgray);
+  margin: 1.6em 0;
+  position: relative;
+  font-family: "STKaiti", "KaiTi", var(--bodyFont);
+
+  &::before {
+    content: "「";
+    position: absolute;
+    left: -0.1em;
+    top: -0.3em;
+    color: var(--bronze);
+    font-size: 2em;
+    opacity: 0.35;
+    font-family: var(--headerFont);
+  }
+}
+
+// ─── 标题：碑刻题额 ────────────────────────────────────
+article h1, article h2, article h3, article h4 {
+  font-family: var(--headerFont);
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  color: var(--paperMist);
+}
+
+article h1 {
+  text-align: center;
+  font-size: 2.2em;
+  margin: 1.8em 0 1.2em;
+  padding: 0.6em 0;
+  position: relative;
+  letter-spacing: 0.15em;
+
+  &::before, &::after {
+    content: "";
+    display: block;
+    width: 60%;
+    margin: 0 auto;
+    height: 0;
+    border-top: 1px solid var(--bronze);
+    border-bottom: 1px solid var(--bronze);
+    padding-top: 3px;
+  }
+  &::before { margin-bottom: 0.5em; }
+  &::after { margin-top: 0.5em; }
+}
+
+article h2 {
+  font-size: 1.55em;
+  border-bottom: 1px solid var(--bronze);
+  padding: 0.3em 0 0.4em 0.9em;
+  margin: 2.2em 0 1em;
+  position: relative;
+  letter-spacing: 0.1em;
+  box-shadow: 0 1px 0 var(--bronze);
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.4em;
+    bottom: 0.55em;
+    width: 4px;
+    background: var(--inkRed);
+    box-shadow: 0 0 0 1px rgba(138, 58, 58, 0.3);
+  }
+}
+
+article h3 {
+  font-size: 1.25em;
+  color: var(--bronze);
+  letter-spacing: 0.12em;
+  margin: 1.8em 0 0.8em;
+
+  &::before {
+    content: "◇ ";
+    color: var(--inkRed);
+    margin-right: 0.2em;
+    opacity: 0.7;
+  }
+}
+
+article h4 {
+  font-size: 1.1em;
+  color: var(--darkgray);
+  letter-spacing: 0.08em;
+  margin: 1.4em 0 0.6em;
+
+  &::before {
+    content: "· ";
+    color: var(--bronze);
+  }
+}
+
+// ─── 内链：朱批点缀 ────────────────────────────────────
+a.internal {
+  text-decoration: none;
+  border-bottom: 1px dotted var(--bronze);
+  padding: 0.1em 0.15rem;
+  color: var(--paperMist);
+  transition: all 0.2s ease;
+  background-image: linear-gradient(transparent 65%, rgba(176, 141, 87, 0.15) 65%);
+  background-size: 100% 100%;
+}
+
+a.internal:hover {
+  color: var(--inkRed);
+  background-image: linear-gradient(transparent 60%, rgba(138, 58, 58, 0.2) 60%);
+  border-bottom-style: solid;
+  border-bottom-color: var(--inkRed);
+}
+
+// ─── 水平分隔：篆隶式三花标记 ─────────────────────────
+article hr {
+  border: none;
+  text-align: center;
+  margin: 2.5em 0;
+  height: 1em;
+  overflow: visible;
+  position: relative;
+
+  &::before {
+    content: "❖   ✦   ❖";
+    color: var(--bronze);
+    font-size: 0.9em;
+    letter-spacing: 1.2em;
+    opacity: 0.6;
+    background: var(--light);
+    padding: 0 1.5em;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    top: 50%;
+    height: 0;
+    border-top: 1px solid rgba(176, 141, 87, 0.25);
+    z-index: -1;
+  }
+}
+
+// ─── 卷首扉页样式（古籍式开篇）─────────────────────────
+.scroll-prelude {
+  max-width: 36em;
+  margin: 3em auto 4em;
+  padding: 2.5em 2em;
+  text-align: center;
+  border-top: 2px solid var(--bronze);
+  border-bottom: 2px solid var(--bronze);
+  position: relative;
+  background:
+    linear-gradient(rgba(176, 141, 87, 0.025), rgba(176, 141, 87, 0.025)),
+    radial-gradient(ellipse at center, rgba(176, 141, 87, 0.04) 0%, transparent 60%);
+
+  &::before, &::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    height: 0;
+    border-top: 1px solid var(--bronze);
+  }
+  &::before { top: 4px; opacity: 0.5; }
+  &::after { bottom: 4px; opacity: 0.5; }
+
+  .scroll-label {
+    display: inline-block;
+    font-family: var(--headerFont);
+    font-size: 0.9em;
+    letter-spacing: 0.6em;
+    color: var(--bronze);
+    margin-bottom: 0.8em;
+    text-indent: 0.6em;
+  }
+
+  .scroll-title {
+    font-family: var(--headerFont);
+    font-size: 2.6em;
+    color: var(--paperMist);
+    letter-spacing: 0.2em;
+    margin: 0.2em 0 0.4em;
+    text-indent: 0.2em;
+    font-weight: 500;
+  }
+
+  .scroll-era {
+    font-family: var(--headerFont);
+    font-size: 1.05em;
+    color: var(--darkgray);
+    letter-spacing: 0.3em;
+    margin: 0.4em 0 1.2em;
+    text-indent: 0.3em;
+  }
+
+  .scroll-quote {
+    font-family: "STKaiti", "KaiTi", var(--bodyFont);
+    font-size: 1.05em;
+    color: var(--dark);
+    line-height: 2;
+    margin: 1.4em auto 0.6em;
+    max-width: 28em;
+    letter-spacing: 0.05em;
+    text-align: justify;
+    text-align-last: center;
+  }
+
+  .scroll-seal {
+    display: inline-block;
+    margin-top: 1.2em;
+    padding: 0.35em 0.6em;
+    border: 1.5px solid var(--inkRed);
+    color: var(--inkRed);
+    font-family: var(--headerFont);
+    font-size: 0.85em;
+    letter-spacing: 0.25em;
+    text-indent: 0.25em;
+    background: rgba(138, 58, 58, 0.04);
+    transform: rotate(-2deg);
+  }
+}
+
+// ─── 首页大开篇：登场仪式 ──────────────────────────────
+.home-hero {
+  max-width: 42em;
+  margin: 4em auto 3em;
+  text-align: center;
+  position: relative;
+
+  .hero-era {
+    font-family: var(--headerFont);
+    font-size: 1rem;
+    letter-spacing: 1em;
+    text-indent: 1em;
+    color: var(--bronze);
+    opacity: 0.85;
+    margin-bottom: 1em;
+  }
+
+  .hero-title {
+    font-family: var(--headerFont);
+    font-size: 4em;
+    color: var(--paperMist);
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    margin: 0.3em 0;
+    font-weight: 500;
+    line-height: 1.2;
+    text-shadow: 0 0 30px rgba(176, 141, 87, 0.1);
+  }
+
+  .hero-subtitle {
+    font-family: var(--headerFont);
+    font-size: 1.1em;
+    color: var(--darkgray);
+    letter-spacing: 0.5em;
+    text-indent: 0.5em;
+    margin: 0.4em 0 1.5em;
+  }
+
+  .hero-rule {
+    width: 8em;
+    margin: 1.5em auto;
+    border: none;
+    height: 0;
+    border-top: 1px solid var(--bronze);
+    position: relative;
+
+    &::before {
+      content: "❖";
+      position: absolute;
+      top: -0.7em;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--light);
+      padding: 0 0.6em;
+      color: var(--inkRed);
+      font-size: 0.9em;
+    }
+  }
+
+  .hero-epigraph {
+    font-family: "STKaiti", "KaiTi", var(--bodyFont);
+    font-size: 1.1em;
+    color: var(--dark);
+    line-height: 2.2;
+    max-width: 26em;
+    margin: 1.5em auto;
+    letter-spacing: 0.06em;
+  }
+
+  .hero-seal {
+    display: inline-block;
+    margin-top: 1.2em;
+    padding: 0.4em 0.8em;
+    border: 2px solid var(--inkRed);
+    color: var(--inkRed);
+    font-family: var(--headerFont);
+    font-size: 0.95em;
+    letter-spacing: 0.35em;
+    text-indent: 0.35em;
+    transform: rotate(-3deg);
+    background: rgba(138, 58, 58, 0.05);
+    box-shadow: inset 0 0 0 3px var(--light), inset 0 0 0 4px rgba(138, 58, 58, 0.4);
+  }
+}
+
+// ─── Mermaid 图：羊皮纸感 ───────────────────────────────
+.mermaid {
+  display: flex;
+  justify-content: center;
+  background: rgba(176, 141, 87, 0.04);
+  padding: 1.2em;
+  border-radius: 2px;
+  border: 1px solid rgba(176, 141, 87, 0.2);
+  border-left: 3px solid var(--bronze);
+}
+
+// ─── 反链 ────────────────────────────────────────────
+.backlinks li {
+  margin: 0.5em 0;
+  &::marker {
+    color: var(--bronze);
+  }
+}
+
+// ─── 列表：朱砂点 ──────────────────────────────────────
+article ul > li::marker {
+  color: var(--bronze);
+}
+article ol > li::marker {
+  color: var(--inkRed);
+  font-family: var(--headerFont);
+}
+
+// ─── 顶部导航与页脚降低存在感 ─────────────────────────
+.page > #quartz-body .left,
+.page > #quartz-body .right {
+  color: var(--darkgray);
+}
+
+footer {
+  border-top: 1px solid rgba(176, 141, 87, 0.2);
+  margin-top: 3em;
+  padding-top: 1.5em;
+  color: var(--gray);
+  font-family: var(--headerFont);
+  letter-spacing: 0.15em;
+}
+
+// ─── 强调 ─────────────────────────────────────────────
+article strong, article b {
+  color: var(--paperMist);
+  font-weight: 600;
+  text-shadow: 0 0 1px rgba(212, 205, 184, 0.3);
+}
+
+article em, article i {
+  color: var(--bronze);
+  font-style: normal;
+  font-family: "STKaiti", "KaiTi", var(--bodyFont);
+}
+
+// ─── 表格：碑刻栏目感 ───────────────────────────────────
+article table {
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  border-top: 2px solid var(--bronze);
+  border-bottom: 2px solid var(--bronze);
+
+  th {
+    background: rgba(176, 141, 87, 0.08);
+    color: var(--paperMist);
+    font-family: var(--headerFont);
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--bronze);
+    padding: 0.6em 1em;
+  }
+  td {
+    padding: 0.5em 1em;
+    border-bottom: 1px dotted rgba(176, 141, 87, 0.2);
+  }
+}
+
+// ─── 进入页面的渐显，模拟翻页 ────────────────────────
+@keyframes scrollOpen {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+article, .home-hero, .scroll-prelude {
+  animation: scrollOpen 0.8s ease-out both;
+}
+
+// ═════════════════════════════════════════════════════════════
+// 深度优化：覆盖 Quartz 默认 UI 组件，保证全站统一碑拓气
+// ═════════════════════════════════════════════════════════════
+
+// ─── 文章顶部标题（H1 = .article-title） ──────────────────
+.page-header .article-title {
+  font-family: var(--headerFont);
+  font-size: 2.4em;
+  color: var(--paperMist);
+  letter-spacing: 0.18em;
+  text-indent: 0.18em;
+  text-align: center;
+  margin: 0.6em 0 0.3em;
+  font-weight: 500;
+  padding-bottom: 0.4em;
+  position: relative;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 4em;
+    height: 0;
+    border-top: 1px solid var(--bronze);
+    margin: 0.5em auto 0;
+    position: relative;
+  }
+}
+
+// ─── 文章元信息（日期 + 阅读时长）────────────────────────
+.content-meta {
+  font-family: var(--headerFont);
+  text-align: center;
+  color: var(--gray);
+  font-size: 0.82em;
+  letter-spacing: 0.35em;
+  text-indent: 0.35em;
+  margin: 0 auto 1.8em;
+  opacity: 0.7;
+
+  time, span {
+    color: var(--gray);
+  }
+}
+
+// ─── frontmatter 属性表（tags / aliases）─────────────────
+.note-properties {
+  margin: 1.2em auto 2em;
+  border-top: 1px dotted rgba(176, 141, 87, 0.25);
+  border-bottom: 1px dotted rgba(176, 141, 87, 0.25);
+  padding: 0.6em 0.4em;
+  background: rgba(176, 141, 87, 0.025);
+
+  .note-properties-header {
+    font-family: var(--headerFont);
+    color: var(--bronze);
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    font-size: 0.85em;
+    cursor: pointer;
+    list-style: none;
+    padding: 0.2em 0.4em;
+    opacity: 0.85;
+
+    &::-webkit-details-marker { display: none; }
+  }
+  .note-properties-title { display: inline-block; margin-right: 0.6em; }
+  .note-properties-count {
+    color: var(--gray);
+    font-size: 0.85em;
+    &::before { content: "（"; }
+    &::after { content: "）"; }
+  }
+  .note-properties-table {
+    width: 100%;
+    margin: 0.6em 0 0.2em;
+    border: none;
+    font-size: 0.9em;
+  }
+  .note-properties-row {
+    border: none;
+  }
+  .note-properties-key {
+    color: var(--bronze);
+    font-family: var(--headerFont);
+    letter-spacing: 0.15em;
+    width: 6em;
+    padding: 0.3em 0.8em 0.3em 0.4em;
+    text-align: right;
+    border: none;
+    vertical-align: top;
+  }
+  .note-properties-value {
+    color: var(--darkgray);
+    padding: 0.3em 0.4em;
+    border: none;
+  }
+  .note-properties-separator {
+    color: var(--gray);
+    margin: 0 0.3em;
+  }
+}
+
+// ─── 标签链接：印章风 ─────────────────────────────────
+a.tag-link {
+  display: inline-block;
+  font-family: var(--headerFont);
+  font-size: 0.85em;
+  padding: 0.12em 0.6em;
+  margin: 0 0.15em;
+  border: 1px solid rgba(176, 141, 87, 0.35);
+  color: var(--bronze) !important;
+  background: rgba(176, 141, 87, 0.04);
+  letter-spacing: 0.1em;
+  border-radius: 1px;
+  text-decoration: none !important;
+  border-bottom: 1px solid rgba(176, 141, 87, 0.35) !important;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(138, 58, 58, 0.1);
+    color: var(--inkRed) !important;
+    border-color: var(--inkRed) !important;
+  }
+}
+
+// ─── Sidebar 标题：碑额式 ────────────────────────────
+.sidebar h2,
+.sidebar h3,
+.explorer h2,
+.toc h3,
+.backlinks h3,
+.graph h3,
+.recent-notes h3 {
+  font-family: var(--headerFont) !important;
+  color: var(--bronze) !important;
+  letter-spacing: 0.35em !important;
+  text-indent: 0.35em;
+  font-size: 0.95em !important;
+  font-weight: 500 !important;
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid rgba(176, 141, 87, 0.2);
+  margin-bottom: 0.8em !important;
+  position: relative;
+
+  &::before {
+    content: "◇ ";
+    color: var(--inkRed);
+    opacity: 0.6;
+    margin-right: 0.2em;
+    text-indent: 0;
+    display: inline-block;
+    transform: translateX(-0.35em);
+  }
+}
+
+// page-title（左上书名）特殊处理
+.sidebar h2.page-title,
+.page-title {
+  font-family: var(--headerFont) !important;
+  font-size: 1.3em !important;
+  letter-spacing: 0.18em !important;
+  text-indent: 0.18em;
+  border: none !important;
+  text-align: center;
+  margin: 1.2em 0 !important;
+  padding: 0.6em 0 !important;
+  border-top: 1px solid var(--bronze) !important;
+  border-bottom: 1px solid var(--bronze) !important;
+  position: relative;
+
+  &::before { content: ""; }
+
+  a {
+    color: var(--paperMist) !important;
+    text-decoration: none !important;
+    border: none !important;
+    background: none !important;
+  }
+
+  &::after {
+    content: "";
+    display: block;
+    width: 80%;
+    margin: 4px auto 0;
+    border-top: 1px solid rgba(176, 141, 87, 0.3);
+  }
+}
+
+// ─── Explorer：文件树 ──────────────────────────────────
+.explorer ul, .explorer li {
+  list-style: none;
+}
+
+// 修复无障碍：折叠的 explorer 内容用 display:none 防止键盘 Tab 进入隐藏链接
+.explorer-content[aria-expanded="false"] {
+  display: none !important;
+}
+// 折叠的 folder 子项同样隐藏
+.explorer li[data-collapsed="true"] > .folder-outer {
+  display: none !important;
+}
+
+.explorer-content {
+  font-size: 0.92em;
+  font-family: var(--bodyFont);
+}
+
+.explorer ul.overflow {
+  max-height: 50vh;
+  scrollbar-color: var(--bronze) transparent;
+}
+
+.explorer .nav-file-title,
+.explorer .nav-folder-title {
+  color: var(--darkgray);
+  padding: 0.25em 0.4em;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  border-radius: 1px;
+  transition: all 0.15s ease;
+  border: none !important;
+  background: transparent !important;
+  text-decoration: none !important;
+
+  &:hover {
+    color: var(--paperMist);
+    background: rgba(176, 141, 87, 0.08) !important;
+  }
+}
+
+.explorer .nav-folder-title {
+  color: var(--bronze);
+  font-family: var(--headerFont);
+  letter-spacing: 0.08em;
+}
+
+.explorer .folder-icon {
+  color: var(--bronze);
+  opacity: 0.6;
+}
+
+// ─── TOC 目录 ────────────────────────────────────────
+.toc-content ul {
+  border-left: 1px dotted rgba(176, 141, 87, 0.25);
+  padding-left: 0.8em;
+}
+.toc-content li {
+  margin: 0.3em 0;
+}
+.toc-content a {
+  color: var(--darkgray);
+  font-size: 0.88em;
+  text-decoration: none !important;
+  border: none !important;
+  background: none !important;
+  letter-spacing: 0.04em;
+  line-height: 1.7;
+
+  &:hover {
+    color: var(--bronze);
+  }
+
+  &.in-view {
+    color: var(--inkRed) !important;
+    font-weight: 500;
+  }
+}
+
+// ─── 反链 / Backlinks ─────────────────────────────────
+.backlinks ul {
+  padding-left: 0;
+  list-style: none;
+}
+.backlinks li {
+  border-left: 2px solid rgba(176, 141, 87, 0.3);
+  padding-left: 0.8em;
+  margin: 0.6em 0;
+  &::marker { content: none; }
+}
+.backlinks a {
+  color: var(--darkgray);
+  font-size: 0.92em;
+  &:hover { color: var(--bronze); }
+}
+
+// ─── 搜索框与按钮 ─────────────────────────────────────
+.search-button {
+  color: var(--bronze) !important;
+  background: rgba(176, 141, 87, 0.06) !important;
+  border: 1px solid rgba(176, 141, 87, 0.25) !important;
+  border-radius: 1px !important;
+  padding: 0.4em 0.8em !important;
+  transition: all 0.2s ease;
+
+  svg { stroke: var(--bronze); }
+
+  p {
+    font-family: var(--headerFont);
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    color: var(--bronze);
+  }
+
+  &:hover {
+    background: rgba(138, 58, 58, 0.08) !important;
+    border-color: var(--inkRed) !important;
+    svg { stroke: var(--inkRed); }
+    p { color: var(--inkRed); }
+  }
+}
+
+#search-container {
+  backdrop-filter: blur(8px) !important;
+  // 暗色：深底蒙层；亮色：米黄旧纸蒙层（让 search-space 在两个模式都可见）
+  background: rgba(42, 40, 38, 0.88) !important;
+}
+:root[saved-theme="light"] #search-container {
+  background: rgba(244, 235, 215, 0.88) !important;
+}
+.search-space {
+  background: var(--lightgray) !important;
+  border: 2px solid var(--bronze) !important;
+  border-radius: 2px !important;
+  box-shadow: 0 0 40px rgba(176, 141, 87, 0.15);
+}
+.search-bar {
+  background: transparent !important;
+  color: var(--paperMist) !important;
+  font-family: var(--bodyFont);
+  font-size: 1.1em !important;
+  letter-spacing: 0.05em;
+  border: none !important;
+  border-bottom: 1px solid var(--bronze) !important;
+
+  &::placeholder {
+    color: var(--gray);
+    letter-spacing: 0.3em;
+  }
+}
+
+// 搜索结果
+.result-card {
+  background: rgba(176, 141, 87, 0.04) !important;
+  border-left: 3px solid transparent !important;
+  &:hover, &.focus {
+    background: rgba(138, 58, 58, 0.08) !important;
+    border-left-color: var(--inkRed) !important;
+  }
+  h3 {
+    color: var(--paperMist);
+    font-family: var(--headerFont);
+    letter-spacing: 0.08em;
+  }
+  p { color: var(--darkgray); }
+}
+
+// ─── Darkmode / Readermode 按钮 ────────────────────────
+.darkmode, .readermode {
+  color: var(--bronze) !important;
+  background: transparent !important;
+  border: 1px solid rgba(176, 141, 87, 0.25) !important;
+  border-radius: 1px !important;
+  padding: 0.4em !important;
+
+  svg {
+    fill: var(--bronze);
+    color: var(--bronze);
+  }
+
+  &:hover {
+    border-color: var(--inkRed) !important;
+    svg { fill: var(--inkRed); color: var(--inkRed); }
+  }
+}
+
+// ─── Graph 关系图 ───────────────────────────────────
+.graph-outer {
+  border: 1px solid rgba(176, 141, 87, 0.2);
+  border-radius: 1px;
+  background: rgba(176, 141, 87, 0.025);
+  // 性能：viewport 外不渲染（CSS Containment）
+  content-visibility: auto;
+  contain-intrinsic-size: 280px;  // 占位高度，防止 CLS
+}
+// 长 article 也启用渐进渲染
+article {
+  contain-intrinsic-size: 1px 8000px;
+}
+// 反链区域也可省渲染
+.backlinks {
+  content-visibility: auto;
+  contain-intrinsic-size: 300px;
+}
+.graph-outer .graph-svg {
+  filter: hue-rotate(15deg) sepia(0.15);
+}
+.global-graph-icon {
+  color: var(--bronze) !important;
+  &:hover { color: var(--inkRed) !important; }
+}
+
+// ─── 代码 / pre ──────────────────────────────────────
+article code {
+  background: rgba(176, 141, 87, 0.1);
+  color: var(--bronze);
+  padding: 0.1em 0.4em;
+  border-radius: 1px;
+  font-size: 0.92em;
+  border: 1px solid rgba(176, 141, 87, 0.15);
+}
+article pre {
+  background: var(--lightgray) !important;  // 暗色: 深石棕 / 亮色: 米黄旧纸
+  border: 1px solid rgba(176, 141, 87, 0.25);
+  border-left: 3px solid var(--bronze);
+  border-radius: 1px;
+  padding: 1em 1.2em;
+  overflow-x: auto;
+
+  code {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: var(--paperMist);
+  }
+}
+
+// ─── Callout 警示框 ───────────────────────────────────
+.callout {
+  background: rgba(176, 141, 87, 0.04) !important;
+  border: 1px solid rgba(176, 141, 87, 0.2) !important;
+  border-left: 4px solid var(--bronze) !important;
+  border-radius: 1px !important;
+  padding: 0.8em 1.2em !important;
+  margin: 1.5em 0;
+
+  .callout-title {
+    color: var(--bronze);
+    font-family: var(--headerFont);
+    letter-spacing: 0.12em;
+    font-weight: 500;
+  }
+
+  &[data-callout="warning"], &[data-callout="caution"] {
+    border-left-color: var(--inkRed) !important;
+    background: rgba(138, 58, 58, 0.06) !important;
+    .callout-title { color: var(--inkRed); }
+  }
+}
+
+// ─── Popover 浮窗（hover 预览）：宽窄合适、内容清晰 ─────
+.popover {
+  background: rgba(42, 40, 38, 0.97) !important;
+  border: 1px solid var(--bronze) !important;
+  border-radius: 2px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(176, 141, 87, 0.25);
+  min-width: 360px !important;
+  max-width: 520px !important;
+  max-height: 480px !important;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  .popover-inner {
+    background: transparent !important;
+    color: var(--dark);
+    padding: 1em 1.3em;
+    max-height: 460px;
+    overflow-y: auto;
+    font-size: 0.92em;
+    line-height: 1.85;
+
+    h1 { font-size: 1.3em !important; color: var(--paperMist) !important; margin: 0.3em 0 0.5em; padding: 0 !important; border: none !important; }
+    h1::before, h1::after { display: none !important; }
+    h2 { font-size: 1.1em !important; }
+    h3 { font-size: 1em !important; }
+
+    // popover 内的 hero / prelude 缩小
+    .home-hero, .scroll-prelude {
+      transform: scale(0.6);
+      transform-origin: top left;
+      max-height: 100px;
+      overflow: hidden;
+    }
+
+    // 隐藏 popover 内的反链/属性，仅看正文
+    .note-properties, .backlinks, .toc, .graph { display: none !important; }
+
+    p { font-size: 0.9em; text-indent: 0 !important; margin: 0.6em 0; }
+    blockquote { margin: 0.8em 0; padding: 0.6em 0.9em !important; font-size: 0.92em; }
+  }
+}
+
+// ─── Markdown 锚点链接图标 ──────────────────────────────
+a.internal[role="anchor"] {
+  opacity: 0.25;
+  border: none !important;
+  background: none !important;
+  margin-left: 0.4em;
+  color: var(--bronze);
+  vertical-align: middle;
+
+  &:hover { opacity: 0.9; color: var(--inkRed); }
+
+  svg { stroke: currentColor; }
+}
+
+// ─── 链接 hover popover-hint 容器 ───────────────────────
+.popover-hint {
+  position: relative;
+}
+
+// ─── 滚动条 ────────────────────────────────────────────
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bronze) transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: rgba(176, 141, 87, 0.4);
+  border-radius: 0;
+  &:hover { background: var(--inkRed); }
+}
+
+// ─── 文本选区 ──────────────────────────────────────────
+::selection {
+  background: rgba(138, 58, 58, 0.4);
+  color: var(--paperMist);
+}
+
+// ─── 移动端折叠按钮 ────────────────────────────────────
+.explorer-toggle, .toc-button {
+  color: var(--bronze) !important;
+}
+
+// ─── 修正：禁用 article > p::first-letter 在 home-hero 等场景的影响 ─
+// 仅对真正的"首段"应用领字效果，跳过含 home-hero 或 scroll-prelude 的页面
+.home-hero + p::first-letter,
+.scroll-prelude + p::first-letter,
+.home-hero ~ blockquote + p::first-letter,
+.scroll-prelude ~ blockquote + p::first-letter {
+  // 撤销领字效果，避免 hero/prelude 后的引文段被错误装饰
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  float: none;
+  margin: 0;
+  padding: 0;
+  font-weight: inherit;
+}
+
+// 仅在 markdown 渲染的第一段（且不是引文）才显示领字
+article > .markdown-preview-view > p:first-child::first-letter,
+article > p:first-child::first-letter {
+  font-family: var(--headerFont);
+  font-size: 2.4em;
+  color: var(--bronze);
+  float: left;
+  line-height: 0.95;
+  margin: 0.1em 0.12em 0 0;
+  padding: 0.05em 0.1em 0 0;
+  font-weight: 500;
+}
+
+// ─── 修复：H1/H2 选择器命中范围与首页 hero 不冲突 ─────────
+.home-hero h1, .home-hero h2, .home-hero h3 {
+  &::before, &::after { display: none !important; }
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: none !important;
+}
+.scroll-prelude h1, .scroll-prelude h2, .scroll-prelude h3 {
+  &::before, &::after { display: none !important; }
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: none !important;
+}
+
+// ─── 响应式：小屏下扉页与 hero 仍美观 ────────────────────
+@media (max-width: 720px) {
+  .home-hero {
+    .hero-title { font-size: 2.6em; letter-spacing: 0.2em; }
+    .hero-era, .hero-subtitle { letter-spacing: 0.5em; font-size: 0.95em; }
+    .hero-epigraph { font-size: 1em; }
+  }
+  .scroll-prelude {
+    padding: 1.8em 1.2em;
+    max-width: 100%;        // mobile: 不超过 viewport
+    box-sizing: border-box;
+    margin-left: 0;
+    margin-right: 0;
+    .scroll-title { font-size: 2em; letter-spacing: 0.15em; }
+    .scroll-era { font-size: 0.95em; letter-spacing: 0.2em; word-break: break-all; }
+  }
+
+  // mobile: 强制 center + article 不超过 viewport，防止水平滚动
+  #quartz-body {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .center {
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box;
+    padding-left: 0.8em !important;
+    padding-right: 0.8em !important;
+  }
+  article {
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+  // mobile: 段落允许在任何位置换行（中文 abbr / wikilink 不撑出段落）
+  article p, article li, article td, article blockquote {
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+  }
+  // abbr/链接同样允许换行
+  article abbr, article a {
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+  }
+  // mobile: abbr tooltip ::before 限宽并贴近 abbr，防止溢出 viewport 撑大 scrollWidth
+  article abbr[title]::before {
+    max-width: calc(100vw - 2em) !important;
+    width: max-content !important;
+    min-width: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+  }
+  article abbr[title]:focus::before,
+  article abbr[title]:active::before {
+    max-width: calc(100vw - 2em) !important;
+    width: max-content !important;
+    min-width: 0 !important;
+  }
+  // mobile: 防止任何元素的 overflow 撑出 viewport
+  body { overflow-x: hidden; }
+  article { font-size: 1rem; }
+  .page-header .article-title { font-size: 1.8em; }
+}
+
+// ─── 阅读模式下隐藏更多干扰 ─────────────────────────────
+.page[data-frame="reader"] {
+  .left, .right { display: none !important; }
+  .center { max-width: 42em !important; margin: 0 auto !important; }
+}
+
+// ─── 翻页式 SPA 过渡（如果 Quartz 启用了 SPA）─────────────
+#quartz-root .center {
+  animation: scrollOpen 0.6s ease-out both;
+}
+
+// ═════════════════════════════════════════════════════════════
+// 第二轮深度修复（基于真实截图发现的问题）
+// ═════════════════════════════════════════════════════════════
+
+// ─── 首页 hero：尺寸更克制、字距更紧 ─────────────────────
+.home-hero {
+  margin: 2.2em auto 2em;
+
+  .hero-era {
+    font-size: 0.85rem;
+    letter-spacing: 0.7em;
+    text-indent: 0.7em;
+    margin-bottom: 0.6em;
+  }
+
+  .hero-title {
+    font-size: 3em;
+    letter-spacing: 0.18em;
+    text-indent: 0.18em;
+    margin: 0.2em 0 0.3em;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95em;
+    letter-spacing: 0.4em;
+    text-indent: 0.4em;
+    margin: 0.3em 0 1em;
+  }
+
+  .hero-rule {
+    width: 6em;
+    margin: 1em auto;
+  }
+
+  .hero-epigraph {
+    font-size: 1.02em;
+    line-height: 2;
+    margin: 1em auto;
+    max-width: 24em;
+  }
+
+  .hero-seal {
+    font-size: 0.85em;
+    margin-top: 0.8em;
+    padding: 0.3em 0.7em;
+    letter-spacing: 0.25em;
+    text-indent: 0.25em;
+  }
+}
+
+// ─── 把 hero 显示在 Properties 之前（视觉顺序）──────────
+// 通过 flex order 让 markdown body 在 properties 之前
+.center {
+  display: flex;
+  flex-direction: column;
+}
+.page-header { order: 1; }
+.page-header .article-title { order: 0; }
+.page-header .note-properties { order: 2; }
+.page-header .content-meta { order: 3; }
+article { order: 4; }
+// 由于上述用 .center 设 display:flex 会破坏布局，撤销并改用别的方式：
+.center { display: block !important; }
+
+// ─── Properties 区块：标题改中文、标签字号 ─────────────
+.note-properties-title {
+  visibility: hidden;
+  position: relative;
+  display: inline-block;
+  width: 0;
+  overflow: visible;
+
+  &::after {
+    content: "属 性";
+    visibility: visible;
+    position: absolute;
+    left: 0;
+    top: 0;
+    white-space: nowrap;
+    color: var(--bronze);
+    letter-spacing: 0.3em;
+  }
+}
+
+// note-properties-key：隐藏英文文本（color: transparent），用 ::before 注入中文
+.note-properties-key {
+  position: relative;
+  color: transparent !important;
+  width: 5em;
+  text-align: right;
+  vertical-align: middle !important;
+  padding: 0.4em 1em 0.4em 0.3em !important;
+  border: none;
+  white-space: nowrap;
+  font-size: 0.001em;  // 缩到几乎不可见的英文，但保留 td 高度
+
+  &::before {
+    position: absolute;
+    right: 1em;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    color: var(--bronze);
+    letter-spacing: 0.25em;
+    font-family: var(--headerFont);
+    white-space: nowrap;
+  }
+}
+
+// 默认：首行 tags / 次行 aliases
+.note-properties-row:nth-of-type(1) .note-properties-key::before { content: "标 签"; }
+.note-properties-row:nth-of-type(2) .note-properties-key::before { content: "别 名"; }
+.note-properties-row:nth-of-type(3) .note-properties-key::before { content: "其 他"; }
+.note-properties-row:nth-of-type(4) .note-properties-key::before { content: "更 多"; }
+
+// 首页特殊：description 在第 1 行（quartz 把 description 列在前）
+// 重新映射 + 隐藏 description 行
+body[data-slug="index"] {
+  // 隐藏首行 description
+  .note-properties-row:nth-of-type(1) { display: none; }
+  // 重新映射剩下两行
+  .note-properties-row:nth-of-type(2) .note-properties-key::before { content: "标 签"; }
+  .note-properties-row:nth-of-type(3) .note-properties-key::before { content: "别 名"; }
+  // 计数器更正
+  .note-properties-count { font-size: 0; }
+  .note-properties-count::before {
+    content: "（2）";
+    font-size: 0.85em;
+    color: var(--gray);
+  }
+}
+
+.note-properties-value {
+  vertical-align: middle !important;
+  padding: 0.4em 0.6em !important;
+  font-size: 0.9rem;
+  color: var(--darkgray);
+}
+
+.note-properties-tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.3em 0.5em;
+  align-items: center;
+}
+
+// tag 之间的逗号隐藏（tag 用 gap 代替）；alias 间用空白
+.note-properties-tags .note-properties-separator { display: none; }
+.note-properties-list .note-properties-separator {
+  color: var(--gray);
+  margin: 0 0.6em;
+  &::before, &::after { content: ""; }
+}
+
+.note-properties-list .note-properties-text {
+  color: var(--darkgray);
+  font-size: 0.9rem;
+  margin-right: 0.5em;
+}
+
+// 标签印章框：缩字号、限制 padding，避免字大于框
+a.tag-link {
+  font-size: 0.78em !important;
+  padding: 0.08em 0.55em !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1.6;
+}
+
+// ─── 内容元信息（日期/阅读时长）→ 弱化 ─────────────────
+.content-meta {
+  font-size: 0.72em !important;
+  letter-spacing: 0.18em !important;
+  text-indent: 0.18em;
+  opacity: 0.55 !important;
+  margin: 0.4em auto 1em !important;
+
+  time, span {
+    color: var(--gray) !important;
+    margin: 0 0.5em;
+  }
+}
+
+// ─── blockquote 顶部 padding 增加，让 「 不被剪 ─────────
+article blockquote {
+  padding: 1.8em 1.6em 1em 1.6em !important;
+  margin: 1.8em 0 !important;
+  overflow: visible;
+  position: relative;
+
+  &::before {
+    top: 0.5em !important;
+    left: 0.4em !important;
+    font-size: 1.6em !important;
+    line-height: 1;
+  }
+
+  // blockquote 内链接不要"半下划线"高亮（避免印章框观感）
+  a.internal {
+    background-image: none !important;
+    background-color: transparent !important;
+    border-bottom: 1px dashed rgba(176, 141, 87, 0.45) !important;
+    padding: 0 !important;
+    color: var(--bronze) !important;
+
+    &:hover {
+      color: var(--inkRed) !important;
+      border-bottom-color: var(--inkRed) !important;
+    }
+  }
+
+  // blockquote 内的第一段不应用领字效果
+  p::first-letter {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    color: inherit !important;
+    float: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-weight: inherit !important;
+  }
+}
+
+// ─── 取消普通正文 a.internal 的"半下划线高亮"（太类印章）─
+// 改成更克制的 dashed bottom border
+a.internal:not([role="anchor"]):not(.tag-link) {
+  background-image: none !important;
+  background-color: transparent !important;
+  border-bottom: 1px dashed rgba(176, 141, 87, 0.45);
+  padding: 0 0.05em !important;
+  color: var(--paperMist);
+  transition: color 0.2s, border-color 0.2s;
+
+  &:hover {
+    color: var(--inkRed);
+    border-bottom-color: var(--inkRed);
+    background: rgba(138, 58, 58, 0.08) !important;
+  }
+}
+
+// ─── 扉页（scroll-prelude）顶/底间距收紧 ─────────────────
+.scroll-prelude {
+  margin: 1.5em auto 2em !important;
+  padding: 1.8em 1.5em !important;
+}
+
+// 扉页后的 H2（如"第一部 · 雀儿"）顶部间距收紧
+.scroll-prelude + h2 {
+  margin-top: 0.5em !important;
+}
+
+// ─── 文章标题字距：减小避免被截 ────────────────────────
+.page-header .article-title {
+  letter-spacing: 0.08em !important;
+  text-indent: 0;
+  font-size: 1.9em !important;
+  margin: 0.6em 0 0.2em;
+  line-height: 1.4;
+}
+
+// ─── TOC 当前段落：避免被裁切 ──────────────────────────
+.toc-content a {
+  font-size: 0.85em !important;
+  letter-spacing: 0.02em !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+
+  &.in-view {
+    color: var(--inkRed) !important;
+    font-weight: 500;
+  }
+}
+
+// ─── 锚点链接图标：再暗一些 ─────────────────────────────
+a.internal[role="anchor"] {
+  opacity: 0.12 !important;
+
+  &:hover { opacity: 0.7 !important; }
+
+  svg { width: 14px !important; height: 14px !important; }
+}
+
+// ─── Sidebar 顶部按钮行：高度对齐 ─────────────────────
+.sidebar .flex-component {
+  align-items: center !important;
+
+  & > div { display: flex; align-items: center; }
+}
+
+// search-button 与 darkmode/readermode 等高
+.search-button {
+  height: 36px;
+  padding: 0 0.8em !important;
+
+  svg { width: 14px; height: 14px; }
+}
+.darkmode, .readermode {
+  height: 36px;
+  width: 36px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+
+  svg { width: 16px; height: 16px; }
+}
+
+// ─── note-properties: 让 key 文字也加古铜 ─────────────
+.note-properties .note-properties-key {
+  text-align: right;
+  letter-spacing: 0.2em;
+}
+
+// 整体 note-properties 字号再压小
+.note-properties .note-properties-table {
+  font-size: 0.85em;
+}
+
+// ─── 让 backlinks 里普通链接也不要带印章框 ─────────────
+.backlinks a.internal {
+  background-image: none !important;
+  background: transparent !important;
+  padding: 0.2em 0.3em !important;
+  border: none !important;
+  border-bottom: 1px dotted transparent !important;
+
+  &:hover {
+    background: rgba(176, 141, 87, 0.06) !important;
+    border-bottom-color: var(--bronze) !important;
+  }
+}
+
+// ─── 修复：article 的第一段如果在 hero/prelude 之后，不应用领字 ─
+.home-hero ~ blockquote::first-letter,
+.scroll-prelude ~ blockquote::first-letter,
+.home-hero ~ p::first-letter,
+.scroll-prelude ~ p::first-letter,
+.home-hero ~ blockquote p::first-letter,
+.scroll-prelude ~ blockquote p::first-letter,
+.markdown-preview-view > .home-hero ~ * ::first-letter,
+.markdown-preview-view > .scroll-prelude ~ * ::first-letter {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  color: inherit !important;
+  float: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-weight: inherit !important;
+}
+
+// ─── 调高对比度：article 文字 ──────────────────────────
+article {
+  color: var(--paperMist);  // 暗色: #d4cdb8 米白；亮色: #2a2826 深棕
+}
+
+article p, article li {
+  color: var(--paperMist);
+}
+
+// strong 标签：朱砂色更显眼（暗色下亮一档，亮色下朱砂）
+article strong, article b {
+  color: var(--inkRed) !important;
+  text-shadow: none !important;
+  font-weight: 600;
+  border-bottom: 1px dotted rgba(176, 141, 87, 0.4);
+  padding-bottom: 1px;
+}
+
+// ─── 第一段（非 hero/prelude 后）的领字微调：更精致 ────
+article > .markdown-preview-view > p:first-child::first-letter,
+article > p:first-child::first-letter {
+  font-size: 2.2em;
+  margin: 0.05em 0.15em 0 0;
+}
+
+// ─── 卷尾装饰：在每篇 article 末尾添加 "卷X 终" ────────
+// 这个需要在 markdown 末尾手动加，先准备样式
+.scroll-finis {
+  text-align: center;
+  margin: 4em auto 2em;
+  font-family: var(--headerFont);
+  color: var(--bronze);
+  letter-spacing: 0.6em;
+  text-indent: 0.6em;
+  font-size: 1em;
+  opacity: 0.7;
+
+  &::before, &::after {
+    content: "";
+    display: inline-block;
+    width: 3em;
+    height: 0;
+    border-top: 1px solid var(--bronze);
+    vertical-align: middle;
+    margin: 0 0.8em;
+    opacity: 0.5;
+  }
+}
+
+// ─── 暗夜底色更深沉，亮色用 --light（米白宣纸） ────────
+// 关键：用 :root[saved-theme="dark"] 限定，仅在暗色时覆盖；亮色让 var(--light) 起作用
+:root[saved-theme="dark"] body {
+  background-color: #1f1d1b !important;
+}
+
+// 左/右 sidebar 比中央内容更深一档（仅暗色）
+:root[saved-theme="dark"] .left,
+:root[saved-theme="dark"] .right {
+  background: rgba(25, 23, 21, 0.4);
+}
+
+// 亮色模式的 sidebar 偏纸黄一点
+:root[saved-theme="light"] .left,
+:root[saved-theme="light"] .right {
+  background: rgba(231, 218, 191, 0.4);
+}
+
+// ─── 焦点 outline 古铜化（无障碍）─────────────────────
+*:focus-visible {
+  outline: 2px solid var(--bronze) !important;
+  outline-offset: 2px;
+}
+
+// ─── 阅读模式：真正"专注"全屏体验 ────────────────────
+// quartz 默认只 opacity:0 sidebar，本站增强：真正隐藏 sidebar，让 center 撑开居中
+:root[reader-mode="on"] {
+  // 隐藏两侧 sidebar 视觉同时收回布局空间
+  .left, .right { display: none !important; }
+  // 关键：把 #quartz-body 改为 flex，让 .center 真居中
+  #quartz-body {
+    display: flex !important;
+    justify-content: center !important;
+    grid-template-columns: none !important;
+  }
+  // 中央正文：限宽 + 内 padding（让长行不疲劳，约 28-32 字一行）
+  .center,
+  .center > * {
+    max-width: 760px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  // article 是 .center 直接子元素或 quartz 自动 wrap：强制限宽
+  article {
+    max-width: 760px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  // 强制 article 用 box-sizing：避免 padding 溢出
+  article, .center { box-sizing: border-box; padding-left: 2em; padding-right: 2em; }
+  // 隐藏面包屑（专注阅读时不需要导航）
+  .breadcrumb-container { display: none !important; }
+  // 隐藏 Properties 表（专注正文）
+  .note-properties { display: none !important; }
+  // 隐藏 content-meta（日期/阅读时长）
+  .content-meta { display: none !important; }
+  // 隐藏 footer 装饰
+  footer { display: none !important; }
+}
+
+// ─── Skip-to-content 链接（键盘无障碍）────────────────
+// 默认完全隐藏（视觉），但可被屏幕阅读器读到、可被 Tab 键聚焦
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--light);
+  color: var(--inkRed) !important;
+  font-family: var(--headerFont);
+  font-size: 0.95em;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  padding: 0.7em 1.5em;
+  border: 2px solid var(--inkRed);
+  border-radius: 2px;
+  text-decoration: none !important;
+  background-image: none !important;
+  z-index: 10001;
+  transition: top 0.18s ease-out;
+  box-shadow: 0 4px 16px rgba(138, 58, 58, 0.25);
+
+  &:focus, &:focus-visible {
+    top: 1em;
+    outline: none !important;
+  }
+}
+
+// ─── 页脚：弱化、字距、改色 ────────────────────────
+footer {
+  font-size: 0.75em !important;
+  opacity: 0.45;
+  text-align: center;
+  padding: 2em 1em !important;
+  border-top: 1px solid rgba(176, 141, 87, 0.15) !important;
+  margin-top: 4em !important;
+  color: var(--gray) !important;
+  letter-spacing: 0.1em !important;
+
+  a {
+    color: var(--gray) !important;
+    border-bottom: 1px dotted rgba(176, 141, 87, 0.2) !important;
+
+    &:hover {
+      color: var(--bronze) !important;
+      border-bottom-color: var(--bronze) !important;
+      background: transparent !important;
+    }
+  }
+
+  // 在 footer 前加篆隶分隔
+  &::before {
+    content: "❖   ✦   ❖";
+    display: block;
+    text-align: center;
+    color: var(--bronze);
+    font-size: 1em;
+    letter-spacing: 1em;
+    opacity: 0.4;
+    margin-bottom: 1.5em;
+  }
+}
+
+// ─── 关系图 graph 配色更收敛 ─────────────────────
+.graph-outer .graph-svg {
+  filter: hue-rotate(20deg) sepia(0.25) brightness(0.95) !important;
+}
+// 当前节点突出
+.graph-outer .graph-svg circle[class*="focus"],
+.graph-outer .graph-svg circle:hover {
+  fill: var(--inkRed) !important;
+}
+
+// ─── 面包屑：碑额式 ───────────────────────────────
+.breadcrumb-container {
+  font-family: var(--headerFont);
+  letter-spacing: 0.18em;
+  font-size: 0.85em;
+  color: var(--gray);
+  margin-bottom: 1.2em;
+  padding-bottom: 0.6em;
+  border-bottom: 1px dotted rgba(176, 141, 87, 0.15);
+
+  a {
+    color: var(--darkgray) !important;
+    border: none !important;
+    background: none !important;
+
+    &:hover { color: var(--bronze) !important; }
+  }
+
+  .breadcrumb-element { color: var(--gray) !important; }
+}
+
+// ─── 修复：第一段领字 在 prelude/hero 之后绝不再触发 ──
+// 用 specificity 更高的方法重置首段
+article .scroll-prelude ~ h2:first-of-type + blockquote p::first-letter,
+article .scroll-prelude ~ h2:first-of-type + blockquote ~ p::first-letter,
+article .scroll-prelude ~ p::first-letter,
+article .scroll-prelude ~ blockquote p::first-letter {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  color: inherit !important;
+  float: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+// 默认：article 内最外层 markdown-preview-view 的真·第一个 p（无 hero/prelude 前缀）才领字
+// 已通过 selector 控制，这里二次锁定
+.markdown-preview-view > .home-hero ~ p::first-letter,
+.markdown-preview-view > .scroll-prelude ~ p::first-letter {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  color: inherit !important;
+  float: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+// ═════════════════════════════════════════════════════════════
+// 第三轮深度改进：体验增强
+// ═════════════════════════════════════════════════════════════
+
+// ─── A1. H1 标题字距收紧 + line-height 加大 + 自动缩字号 ──
+.page-header .article-title {
+  letter-spacing: 0.03em !important;
+  line-height: 1.6 !important;
+  word-break: keep-all;
+  hyphens: none;
+  font-size: clamp(1.4em, 4vw, 2em) !important;
+  max-width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// ─── A2. blockquote 内"〔史笔〕"等小标题视觉强化 ──────
+article blockquote strong:first-child,
+article blockquote p:first-child > strong:first-child {
+  display: inline-block;
+  font-family: var(--headerFont);
+  color: var(--inkRed);
+  letter-spacing: 0.18em;
+  font-size: 0.9em;
+  padding: 0.05em 0.35em;
+  border: 1px solid rgba(138, 58, 58, 0.4);
+  background: rgba(138, 58, 58, 0.06);
+  border-radius: 1px;
+  margin-right: 0.5em;
+  border-bottom: 1px solid rgba(138, 58, 58, 0.4) !important;
+  vertical-align: middle;
+  font-weight: 500;
+}
+
+// ─── A3. hr ❖✦❖ 不再露出底色 ───────────────────────────
+article hr::before {
+  background: transparent !important;
+  padding: 0 !important;
+}
+article hr::after { display: none !important; }
+article hr {
+  font-size: 1em;
+  &::before {
+    content: "❖   ✦   ❖";
+    color: var(--bronze);
+    letter-spacing: 1em;
+    opacity: 0.5;
+  }
+}
+
+// ─── B1. 顶部阅读进度条（用 CSS scroll-driven animation）─
+@keyframes progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, var(--bronze), var(--inkRed));
+  z-index: 9999;
+  pointer-events: none;
+  transform-origin: left;
+  transform: scaleX(0);
+  animation: progress linear both;
+  animation-timeline: scroll(root);
+}
+// fallback：浏览器不支持 scroll-timeline 时藏起来
+@supports not (animation-timeline: scroll()) {
+  body::before { display: none; }
+}
+
+// ─── B4. 段落首行缩进（古籍式，1.5em 更克制）──────────
+article p {
+  text-indent: 1.5em;
+}
+article > .markdown-preview-view > p:first-child,
+article blockquote p,
+article li p,
+.scroll-prelude p,
+.home-hero p {
+  text-indent: 0;
+}
+// 领字段落不要 indent
+article > .markdown-preview-view > p:first-of-type,
+article > p:first-of-type {
+  text-indent: 0;
+}
+// H2 / H3 / hr 后第一段也不缩进（视觉上更像古籍章节首段）
+article h2 + p,
+article h3 + p,
+article hr + p {
+  text-indent: 0;
+}
+
+// ─── B5. article 左侧立柱（竖卷感）──────────────────────
+@media (min-width: 1000px) {
+  article {
+    position: relative;
+    padding-left: 1.5em;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.5em;
+      bottom: 0.5em;
+      width: 1px;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(176, 141, 87, 0.2) 8%,
+        rgba(176, 141, 87, 0.2) 92%,
+        transparent 100%
+      );
+    }
+  }
+}
+
+// ─── B6. 返回顶部按钮（CSS-only 用 :target/scroll-margin 不行，用 fixed 按钮）─
+.back-to-top {
+  position: fixed;
+  bottom: 2em;
+  right: 2em;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--bronze);
+  background: rgba(42, 40, 38, 0.85);
+  backdrop-filter: blur(8px);
+  color: var(--bronze);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-family: var(--headerFont);
+  font-size: 0.8em;
+  letter-spacing: 0.1em;
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s, border-color 0.2s, color 0.2s;
+  pointer-events: none;
+
+  &.visible {
+    opacity: 0.85;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  // CSS-only：滚动超过 500px 自动显示
+  animation: showBackToTop linear both;
+  animation-timeline: scroll(root);
+  animation-range: 500px 600px;
+}
+@keyframes showBackToTop {
+  from { opacity: 0; pointer-events: none; transform: translateY(10px); }
+  to { opacity: 0.85; pointer-events: auto; transform: translateY(0); }
+}
+.back-to-top {
+
+  &:hover {
+    color: var(--inkRed);
+    border-color: var(--inkRed);
+    background: rgba(138, 58, 58, 0.15);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+  }
+}
+
+// ─── B7. 卷尾装饰：自动出现在 article 末尾 ───────────────
+.scroll-finis {
+  text-align: center;
+  margin: 3em auto 2em;
+  font-family: var(--headerFont);
+  color: var(--bronze);
+  letter-spacing: 0.6em;
+  text-indent: 0.6em;
+  font-size: 1em;
+  opacity: 0.6;
+  position: relative;
+  padding: 1em 0;
+
+  &::before {
+    content: "";
+    display: block;
+    width: 60%;
+    margin: 0 auto 0.6em;
+    border-top: 1px solid var(--bronze);
+    opacity: 0.4;
+  }
+
+  &::after {
+    content: "";
+    display: block;
+    width: 30%;
+    margin: 0.6em auto 0;
+    border-top: 1px solid var(--bronze);
+    opacity: 0.4;
+  }
+}
+
+// ─── B8. 卷尾导航按钮（朱印风）─────────────────────────
+.scroll-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1.5em;
+  margin: 2em 0;
+  flex-wrap: wrap;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.5em 1.2em;
+    border: 1.5px solid var(--inkRed);
+    color: var(--inkRed) !important;
+    background: rgba(138, 58, 58, 0.06);
+    font-family: var(--headerFont);
+    letter-spacing: 0.2em;
+    text-indent: 0.2em;
+    font-size: 0.9em;
+    border-radius: 1px;
+    text-decoration: none !important;
+    background-image: none !important;
+    transition: all 0.2s;
+
+    &:hover {
+      background: rgba(138, 58, 58, 0.18) !important;
+      transform: translateY(-1px);
+    }
+
+    &.prev::before {
+      content: "◁";
+      color: var(--bronze);
+      margin-right: 0.3em;
+    }
+    &.next::after {
+      content: "▷";
+      color: var(--bronze);
+      margin-left: 0.3em;
+    }
+  }
+}
+
+// ─── D. SPA 翻页动画：克制 + 流畅 ─────────────────────
+.center {
+  animation: pageOpen 0.28s ease-out both;
+}
+@keyframes pageOpen {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+// 用户偏好减少动画时立刻关闭
+@media (prefers-reduced-motion: reduce) {
+  .center, article, .home-hero, .scroll-prelude {
+    animation: none !important;
+  }
+}
+
+// ─── 修复：移动端 sticky header 加背景 + 半透模糊 + 高度收紧 ─
+@media (max-width: 800px) {
+  // 全局 scroll-padding 保证 anchor 跳转留出 sticky header 空间
+  html {
+    scroll-padding-top: 5em;
+  }
+  // abbr 提到上层，防止被 H2 padding 区域覆盖
+  article abbr[title] {
+    position: relative;
+    z-index: 1;
+  }
+  article h2, article h3 {
+    scroll-margin-top: 5em;
+  }
+
+  .left.sidebar {
+    background: rgba(26, 24, 22, 0.92) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(176, 141, 87, 0.2);
+    padding: 0.4em 0.8em !important;
+    display: flex !important;
+    align-items: center;
+    flex-wrap: nowrap !important;
+    gap: 0.5em;
+    isolation: isolate;  // 创建独立 stacking context, 防止内部元素穿透
+  }
+
+  // flex-component（搜索 + 暗色 + 阅读按钮组）压平到单行
+  .left.sidebar .flex-component {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    gap: 0.3em !important;
+    height: auto !important;
+  }
+  .left.sidebar .flex-component > * {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    height: 32px;
+  }
+
+  // page-title 一行
+  .left.sidebar .page-title {
+    flex: 1 1 auto;
+    font-size: 0.92em !important;
+    margin: 0 !important;
+    padding: 0.2em 0.4em !important;
+    border: none !important;
+    text-align: left !important;
+    line-height: 1.3 !important;
+    &::after { display: none !important; }
+  }
+
+  // explorer toggle 隐藏在 sticky bar，等用户按 hamburger 才展开
+  .left.sidebar .explorer-content {
+    display: none;
+  }
+
+  // hamburger icon
+  .left.sidebar .mobile-explorer.explorer-toggle {
+    display: inline-flex !important;
+    flex: 0 0 auto;
+  }
+
+  // search button 与暗色/阅读按钮高度统一为 32px
+  .left.sidebar .search-button,
+  .left.sidebar .darkmode,
+  .left.sidebar .readermode {
+    height: 32px !important;
+    padding: 0 0.5em !important;
+  }
+}
+
+// ─── C. 移动端：sidebar 折叠、主内容更舒展 ────────────────
+@media (max-width: 800px) {
+  .page-header .article-title {
+    font-size: 1.5em !important;
+    line-height: 1.4 !important;
+  }
+  .home-hero {
+    .hero-title { font-size: 2em !important; letter-spacing: 0.15em !important; }
+    .hero-era, .hero-subtitle { letter-spacing: 0.4em !important; }
+    .hero-epigraph { font-size: 0.95em !important; }
+  }
+  article {
+    padding-left: 0 !important;
+    &::before { display: none; }
+  }
+  .scroll-prelude {
+    padding: 1.2em 0.8em !important;
+    .scroll-title { font-size: 1.7em !important; letter-spacing: 0.12em !important; }
+  }
+  .scroll-nav {
+    gap: 0.6em;
+    a { font-size: 0.78em; padding: 0.4em 0.8em; }
+  }
+  .back-to-top {
+    bottom: 1em;
+    right: 1em;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+// ─── 修复：blockquote 段落不应继承 article p 的 text-indent ─
+article blockquote p {
+  text-indent: 0 !important;
+}
+
+// ─── 优化：表格在窄屏可滚动 ──────────────────────────
+article table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+// ─── 标签 hover 更醒目 ────────────────────────────────
+a.tag-link {
+  transition: all 0.18s ease;
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(138, 58, 58, 0.15);
+  }
+}
+
+// ─── article 整体最大宽度收一点，提高单行字数舒适度 ────
+.center {
+  max-width: 56em;
+}
+@media (min-width: 1200px) {
+  .center { max-width: 60em; }
+}
+
+// ─── 解决 article p 缩进 + 领字交互问题 ─────────────────
+// 当首段有领字时，去除其 text-indent
+article > .markdown-preview-view > p:first-child:first-letter,
+article > p:first-child:first-letter {
+  margin-left: 0;
+}
+
+// 引文里的 first-child p 的内嵌 br 后的"续行"不应有缩进
+article blockquote br + * {
+  text-indent: 0 !important;
+}
+
+// ─── 第四轮补强 ────────────────────────────────────────
+
+// TOC 长项 hover 显示完整文字（browser native title 已支持，加上 css 强化）
+.toc-content a {
+  &:hover {
+    color: var(--bronze) !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    background: rgba(176, 141, 87, 0.05);
+    padding-left: 0.3em;
+  }
+}
+
+// 关系图节点透明度降低，减少视觉杂乱
+.graph-outer .graph-svg circle {
+  opacity: 0.7;
+  transition: opacity 0.2s, fill 0.2s, stroke 0.2s;
+}
+.graph-outer .graph-svg circle:hover {
+  opacity: 1;
+  stroke: var(--inkRed) !important;
+  stroke-width: 1.5 !important;
+}
+.graph-outer .graph-svg .link {
+  stroke-opacity: 0.25 !important;
+}
+
+// footer 题款式装饰
+footer {
+  text-align: center;
+  font-style: italic;
+
+  p, span {
+    display: inline-block;
+    margin: 0 0.3em;
+  }
+}
+
+// 段首 strong 徽记仅在短文本（≤8 字符）时应用
+// CSS 不支持精确字符计数，改成更严格的选择器：仅当 strong 在 blockquote 第一个 p 的开头且后面立刻是冒号、空格或顿号时（用兄弟选择不可行）
+// 退而求其次：限定 blockquote 的第一段 strong:first-child 仍生效，但减小视觉冲击度
+article blockquote strong:first-child,
+article blockquote p:first-child > strong:first-child {
+  font-size: 0.88em;
+  padding: 0.02em 0.4em;
+  letter-spacing: 0.15em;
+  // 长 strong（多于约 8 字）时，去掉 border、保留色彩
+  // 用 max-width hack：让长的 strong 自然折行，但 border 会显得糟
+}
+
+// hero/prelude 内的 blockquote strong 也不应被装饰（用嵌套保护）
+.home-hero strong, .scroll-prelude strong {
+  border: none !important;
+  background: none !important;
+  padding: 0 !important;
+  font-size: inherit !important;
+  letter-spacing: inherit !important;
+}
+
+// 长粗体词（在引文里）保护：用 strong:not(:only-child):not(:first-of-type) 不靠谱
+// 用更具体的 markdown class
+article blockquote .markdown-rendered strong { /* no-op */ }
+
+// 增强：article 内的 wikilink 链接，hover 时除颜色变化外再加微动
+article a.internal:not([role="anchor"]):not(.tag-link):hover {
+  transition: all 0.15s ease;
+}
+
+// 表格在 article 内有更好对比
+article table th {
+  font-size: 0.95em;
+  color: var(--paperMist) !important;
+}
+article table td {
+  color: var(--dark);
+}
+
+// 改进：scroll-nav 按钮 hover 微动 + 焦点
+.scroll-nav a {
+  &:hover {
+    box-shadow: 0 4px 12px rgba(138, 58, 58, 0.15);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--bronze);
+    outline-offset: 3px;
+  }
+}
+
+// 反链区改进：当前页面在反链表里高亮（CSS 无法做，但加 hover）
+.backlinks li:hover {
+  border-left-color: var(--inkRed) !important;
+  padding-left: 1em;
+  transition: all 0.15s;
+}
+
+// explorer 当前页面高亮（quartz 给当前页面 a 加 .active class）
+.explorer a.active {
+  color: var(--inkRed) !important;
+  font-weight: 500;
+  background: rgba(138, 58, 58, 0.08);
+}
+
+// 滚动到锚点时给目标段落短暂高亮（视觉确认）
+:target {
+  animation: targetHighlight 1.4s ease-out;
+}
+@keyframes targetHighlight {
+  0% { background: rgba(176, 141, 87, 0.25); }
+  100% { background: transparent; }
+}
+
+// 滚动 anchor 留出顶部空间（避免被 sidebar 覆盖）
+article h2, article h3 {
+  scroll-margin-top: 1em;
+}
+
+// 增强可访问性：用户在键盘 tab 时焦点可见
+.search-button:focus-visible,
+.darkmode:focus-visible,
+.readermode:focus-visible {
+  outline: 2px solid var(--bronze) !important;
+  outline-offset: 2px;
+}
+
+// 修复进度条 z-index（与 sidebar 不冲突）
+body::before {
+  z-index: 10000 !important;
+}
+
+// 修复 mobile 顶部 sticky 后正文要给空间
+@media (max-width: 800px) {
+  article {
+    margin-top: 0.5em;
+  }
+}
+
+// hero/scroll-prelude/sidebar 上的 strong 不要徽记效果（兜底）
+.sidebar strong, .home-hero strong, .scroll-prelude strong, .scroll-finis strong, .scroll-nav strong {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  letter-spacing: inherit !important;
+  font-size: inherit !important;
+  color: inherit !important;
+}
+
+// ─── 第五轮：首页 CTA 区（"立即开卷" + 次级入口 + 快捷键提示）─
+.home-cta {
+  max-width: 42em;
+  margin: 1.5em auto 3em;
+  text-align: center;
+
+  .cta-primary {
+    display: inline-block;
+    padding: 0.7em 2em;
+    background: rgba(138, 58, 58, 0.12);
+    color: var(--inkRed) !important;
+    border: 2px solid var(--inkRed);
+    font-family: var(--headerFont);
+    font-size: 1.05em;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    border-radius: 2px;
+    text-decoration: none !important;
+    background-image: none !important;
+    box-shadow: inset 0 0 0 3px var(--light), inset 0 0 0 4px rgba(138, 58, 58, 0.35);
+    transition: all 0.25s ease;
+
+    &:hover {
+      background: rgba(138, 58, 58, 0.22);
+      transform: translateY(-2px);
+      box-shadow: inset 0 0 0 3px var(--light), inset 0 0 0 4px rgba(138, 58, 58, 0.5), 0 6px 18px rgba(138, 58, 58, 0.18);
+    }
+  }
+
+  .cta-secondary {
+    margin: 1.6em auto 1em;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5em 1.4em;
+
+    a {
+      color: var(--bronze) !important;
+      font-family: var(--headerFont);
+      font-size: 0.9em;
+      letter-spacing: 0.25em;
+      text-indent: 0.25em;
+      padding: 0.3em 0.4em;
+      border: none !important;
+      background: none !important;
+      background-image: none !important;
+      text-decoration: none !important;
+      position: relative;
+      transition: color 0.18s;
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        right: 50%;
+        bottom: -2px;
+        height: 1px;
+        background: var(--inkRed);
+        transition: left 0.25s, right 0.25s;
+      }
+
+      &:hover {
+        color: var(--inkRed) !important;
+        &::after { left: 10%; right: 10%; }
+      }
+    }
+  }
+
+  .cta-hint {
+    margin-top: 1.4em;
+    color: var(--gray);
+    font-size: 0.78em;
+    letter-spacing: 0.18em;
+    opacity: 0.65;
+
+    kbd {
+      display: inline-block;
+      font-family: var(--codeFont);
+      font-size: 0.85em;
+      padding: 0.05em 0.4em;
+      margin: 0 0.15em;
+      border: 1px solid rgba(176, 141, 87, 0.35);
+      border-radius: 2px;
+      background: rgba(176, 141, 87, 0.05);
+      color: var(--bronze);
+      box-shadow: 0 1px 0 rgba(176, 141, 87, 0.2);
+      letter-spacing: 0;
+    }
+  }
+}
+
+@media (max-width: 800px) {
+  .home-cta {
+    .cta-primary { font-size: 0.95em; padding: 0.6em 1.2em; letter-spacing: 0.2em; }
+    .cta-secondary { gap: 0.4em 0.8em; a { font-size: 0.82em; letter-spacing: 0.15em; } }
+    .cta-hint { font-size: 0.72em; }
+  }
+}
+
+// ─── 第五轮：mermaid 图配色统一到碑拓 ────────────────
+.mermaid {
+  // 节点 fill 改古铜，边线古铜
+  svg {
+    .node rect, .node circle, .node polygon, .node path {
+      fill: rgba(176, 141, 87, 0.08) !important;
+      stroke: var(--bronze) !important;
+      stroke-width: 1px !important;
+    }
+    // 当前/焦点节点用朱砂
+    .node.current rect, .node.current polygon {
+      fill: rgba(138, 58, 58, 0.18) !important;
+      stroke: var(--inkRed) !important;
+    }
+    // 文字
+    .nodeLabel, .label, text {
+      fill: var(--paperMist) !important;
+      color: var(--paperMist) !important;
+      font-family: var(--bodyFont) !important;
+    }
+    // 边线
+    .edgePath path, .flowchart-link {
+      stroke: rgba(176, 141, 87, 0.4) !important;
+      stroke-width: 1.2px !important;
+    }
+    // 边线箭头
+    marker path {
+      fill: var(--bronze) !important;
+    }
+    // edgeLabel 文字
+    .edgeLabel {
+      background-color: var(--light) !important;
+      color: var(--bronze) !important;
+      .label-container { background: transparent !important; }
+    }
+  }
+}
+
+// ─── 第五轮：增强反链 hover 反馈 + 整体 visual rhythm ──
+.backlinks ul {
+  // 给 ul 一个微妙的左 padding gap
+  padding: 0;
+}
+
+// ─── 第五轮：表格细致优化 ─────────────────────────────
+article table {
+  font-size: 0.95em;
+
+  tbody tr:nth-child(even) td {
+    background: rgba(176, 141, 87, 0.02);
+  }
+  tbody tr:hover td {
+    background: rgba(138, 58, 58, 0.04);
+  }
+}
+
+// ─── 第五轮：每段强调词的 hover 反馈（不必要但加分）──
+article strong:hover {
+  color: var(--inkRed) !important;
+  border-bottom-color: var(--inkRed) !important;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+// ─── 第五轮：dark mode toggle 按钮提示 tooltip ────────
+.darkmode { position: relative; }
+.darkmode::after {
+  content: attr(aria-label);
+  position: absolute;
+  top: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(42, 40, 38, 0.95);
+  border: 1px solid var(--bronze);
+  color: var(--bronze);
+  font-family: var(--headerFont);
+  font-size: 0.75em;
+  letter-spacing: 0.15em;
+  padding: 0.3em 0.6em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 100;
+}
+.darkmode:hover::after {
+  opacity: 1;
+}
+
+// ─── 第五轮：滚动到长 article 上下卷按钮区时给一个分隔感 ─
+.scroll-nav {
+  border-top: 1px dotted rgba(176, 141, 87, 0.2);
+  padding-top: 2em;
+  margin-top: 2.5em;
+}
+
+// scroll-finis 在 scroll-nav 之后稍微紧凑
+.scroll-nav + .scroll-finis {
+  margin-top: 1em;
+}
+
+// ═════════════════════════════════════════════════════════════
+// 第六轮：长文阅读体验深度增强
+// ═════════════════════════════════════════════════════════════
+
+// ─── 1. 章节 H2 自动编号 + 进度计数 ─────────────────────
+// 仅给"第X章"形式的 H2 自动注入"N / total"标识
+article {
+  // 重置章节计数（每篇 article 重置）
+  counter-reset: chapter;
+}
+
+// 只有 H2 以"第X章"开头的，才视为章节
+// 暂用 attribute selector 估算 — id 以"第" + 章节模式
+article h2[id*="章-"]::before,
+article h2[id^="第"][id*="章"]::before {
+  content: "❖ ";
+  color: var(--inkRed);
+  opacity: 0.6;
+  margin-right: 0.2em;
+  text-indent: 0;
+  display: inline-block;
+  transform: translateX(-0.3em);
+  font-size: 0.85em;
+  pointer-events: none;  // 不拦截 abbr/链接点击
+}
+
+// 所有 H2/H3 装饰元素禁止鼠标拦截
+article h1::before, article h1::after,
+article h2::before, article h2::after,
+article h3::before, article h3::after { pointer-events: none !important; }
+
+// 给 H2 章节加章节计数 + 显示
+article h2[id^="第"][id*="章"] {
+  position: relative;
+
+  &::after {
+    content: "卷 内 章 节";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--headerFont);
+    font-size: 0.5em;
+    letter-spacing: 0.4em;
+    color: var(--bronze);
+    opacity: 0.4;
+    background: var(--light);
+    padding: 0.1em 0.6em;
+    border: 1px solid rgba(176, 141, 87, 0.2);
+    border-radius: 1px;
+    font-weight: 400;
+    pointer-events: none;  // 防止覆盖在正文 abbr 上方导致 tap 拦截
+  }
+}
+
+// ─── 2. TOC 当前段落朱印小点 + 滑动指针 ────────────────
+// .toc-content 本身就是 ul（quartz）
+ul.toc-content {
+  position: relative;
+  padding-left: 1.2em !important;
+  border-left: 1px solid rgba(176, 141, 87, 0.15);
+  list-style: none;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: -1px;
+    top: 10%;
+    bottom: 10%;
+    width: 2px;
+    background: linear-gradient(to bottom,
+      transparent 0%,
+      rgba(176, 141, 87, 0.25) 50%,
+      transparent 100%
+    );
+    opacity: 0.7;
+  }
+
+  li {
+    position: relative;
+    padding: 0.1em 0;
+  }
+}
+
+ul.toc-content li a.in-view {
+  position: relative;
+  display: inline-block;
+}
+
+ul.toc-content li:has(> a.in-view) {
+  &::before {
+    content: "";
+    position: absolute;
+    left: -1.5em;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 5px;
+    background: var(--inkRed);
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(138, 58, 58, 0.18),
+                0 0 6px rgba(138, 58, 58, 0.5);
+    animation: pulseToc 2s ease-in-out infinite;
+  }
+}
+
+@keyframes pulseToc {
+  0%, 100% {
+    box-shadow: 0 0 0 2px rgba(138, 58, 58, 0.2), 0 0 8px rgba(138, 58, 58, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(138, 58, 58, 0.1), 0 0 12px rgba(138, 58, 58, 0.5);
+  }
+}
+
+// ─── 3. 文章每段落 hover 时左边出朱印小书签 ─────────────
+article p {
+  position: relative;
+  transition: padding-left 0.2s;
+}
+
+article p:hover {
+  &::before {
+    content: "";
+    position: absolute;
+    left: -0.8em;
+    top: 0.4em;
+    bottom: 0.4em;
+    width: 2px;
+    background: var(--inkRed);
+    opacity: 0.4;
+  }
+}
+
+// ─── 4. 章首样式增强：让 H2 章节看起来像"卷内分卷" ────
+article h2[id^="第"][id*="章"] {
+  margin-top: 3em !important;
+  padding-top: 0.8em !important;
+  padding-bottom: 0.6em !important;
+  border-top: 1px dotted rgba(176, 141, 87, 0.25);
+  font-family: var(--headerFont) !important;
+  font-size: 1.65em !important;
+}
+
+// ─── 5. 章节内的引文与正文区分增强 ───────────────────
+article h2 + p,
+article h2[id^="第"][id*="章"] + p {
+  // 章节首段加领字
+  &::first-letter {
+    font-family: var(--headerFont);
+    font-size: 2em;
+    color: var(--bronze);
+    float: left;
+    line-height: 0.95;
+    margin: 0.1em 0.15em 0 0;
+    padding: 0.05em 0.1em 0 0;
+    font-weight: 500;
+    opacity: 0.85;
+  }
+  // 首段不要 text-indent
+  text-indent: 0 !important;
+  margin-top: 1.2em;
+}
+
+// ─── 6. 段落内重点引语强化（"赤光""星火"等单独引号 chunk）
+article p > q,
+article p::after {
+  // 暂留 hook
+}
+
+// ─── 7. 引文增强：blockquote 内的"〔史笔〕"等头标更醒目 ─
+article blockquote {
+  // 古铜左边竖直双线
+  border-left: 3px double var(--bronze) !important;
+  // 内部首段 p 加一个左缩
+  & > p:first-child {
+    padding-left: 0.5em;
+  }
+}
+
+// ─── 8. 文档底色加微妙竖向纹理（更像古卷）─────────────
+body {
+  background-image:
+    linear-gradient(to right,
+      transparent 0%,
+      transparent 49.6%,
+      rgba(176, 141, 87, 0.015) 49.7%,
+      rgba(176, 141, 87, 0.015) 50.3%,
+      transparent 50.4%,
+      transparent 100%
+    ),
+    radial-gradient(ellipse 1px 1px at 23% 17%, rgba(212, 205, 184, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 1px 1px at 67% 38%, rgba(212, 205, 184, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse 1.5px 1px at 41% 71%, rgba(212, 205, 184, 0.035) 0%, transparent 50%),
+    radial-gradient(ellipse 1px 1.5px at 82% 84%, rgba(176, 141, 87, 0.025) 0%, transparent 50%),
+    radial-gradient(ellipse 600px 400px at 15% 25%, rgba(176, 141, 87, 0.025) 0%, transparent 70%),
+    radial-gradient(ellipse 800px 500px at 85% 75%, rgba(138, 58, 58, 0.015) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 700px at 50% 50%, rgba(212, 205, 184, 0.012) 0%, transparent 60%) !important;
+  background-size: 100% 100%, 240px 240px, 320px 320px, 280px 280px, 360px 360px, 100% 100%, 100% 100%, 100% 100% !important;
+}
+
+// ─── 9. article 整体节奏：H2 章首大间距 + H3 中间距 + hr 微克制 ─
+article h3 {
+  margin-top: 2.2em !important;
+}
+
+article hr {
+  margin: 2.8em 0 !important;
+  &::before {
+    letter-spacing: 0.8em !important;
+  }
+}
+
+// ─── 10. "本部小结" 引文 + 卷尾 nav 之间的视觉过渡 ────
+article blockquote:last-of-type {
+  margin-bottom: 1.5em;
+}
+
+// ─── 11. 章节内 hover H2 时显示「该章在卷内位置 N/M」（CSS counter）─
+// 用 counter() 在 H2 上动态显示章节序号
+article {
+  counter-reset: chap;
+}
+article h2[id^="第"][id*="章"] {
+  counter-increment: chap;
+}
+// H2 ::before 显示朱菱，::after 显示总位置
+// 因为我们不容易知道总章数，这里仅显示当前序号
+article h2[id^="第"][id*="章"]::after {
+  content: "卷 内 第 " counter(chap) " 章" !important;
+}
+
+// ─── 12. 段间空白 = "息" ───────────────────────────────
+article p + p {
+  margin-top: 1.1em;
+}
+
+// ─── 13. 顶部 sidebar 滚动跟随主体小动画 ────────────────
+.sidebar {
+  transition: opacity 0.2s;
+}
+
+// ─── 14. 改 explorer current page 强化 ────────────────
+.explorer a.active,
+.explorer li.active > a,
+.explorer .nav-file-title.is-active {
+  color: var(--inkRed) !important;
+  background: rgba(138, 58, 58, 0.08) !important;
+  border-left: 3px solid var(--inkRed) !important;
+  padding-left: 0.5em !important;
+  font-weight: 500;
+}
+
+// ─── 15. 行高/字号"沉浸阅读模式"切换（暗藏特性） ──────
+// 当 article 有 .immersive class 时增大字号、放宽行距
+article.immersive {
+  font-size: 1.18rem;
+  line-height: 2.25;
+  max-width: 36em;
+  margin: 0 auto;
+}
+.immersive p {
+  text-indent: 1.8em;
+}
+
+// ─── 16. 焦点段落淡化其他段（专注模式，CSS scroll-driven）─
+// 注释：scroll-driven animations 不支持基于"中心可见段落" — 跳过
+
+// ═════════════════════════════════════════════════════════════
+// 第七轮：边角页面 + 移动端 drawer + 专注模式 + 404
+// ═════════════════════════════════════════════════════════════
+
+// ─── 404 页布局修复 ────────────────────────────────────
+body[data-slug="404"] {
+  article {
+    max-width: 36em;
+    margin: 4em auto !important;
+    text-align: center;
+    padding: 3em 2em !important;
+    border-top: 2px solid var(--bronze);
+    border-bottom: 2px solid var(--bronze);
+    background:
+      linear-gradient(rgba(176, 141, 87, 0.02), rgba(176, 141, 87, 0.02)),
+      radial-gradient(ellipse at center, rgba(176, 141, 87, 0.04) 0%, transparent 60%);
+
+    h1 {
+      font-size: 4em !important;
+      letter-spacing: 0.15em !important;
+      color: var(--inkRed) !important;
+      margin: 0.3em 0 !important;
+      &::before, &::after { display: none !important; }
+    }
+
+    p {
+      text-indent: 0 !important;
+      &::first-letter { font-size: 1em !important; float: none !important; color: inherit !important; margin: 0 !important; }
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 1.5em;
+      padding: 0.5em 1.5em;
+      border: 1.5px solid var(--inkRed);
+      color: var(--inkRed) !important;
+      background: rgba(138, 58, 58, 0.06);
+      font-family: var(--headerFont);
+      letter-spacing: 0.3em;
+      text-indent: 0.3em;
+      text-decoration: none !important;
+      background-image: none !important;
+      border-bottom: 1.5px solid var(--inkRed) !important;
+
+      &:hover {
+        background: rgba(138, 58, 58, 0.18) !important;
+        transform: translateY(-1px);
+      }
+    }
+  }
+}
+
+// ─── Tag 聚合页：标签列表更紧凑 ─────────────────────
+body[data-slug^="tags/"] {
+  // 标签列表项里 #tag 链接更紧凑
+  article ul li {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.4em;
+    padding: 0.6em 0;
+    border-bottom: 1px dotted rgba(176, 141, 87, 0.12);
+
+    & > a.internal {
+      flex: 1 1 60%;
+      min-width: 0;
+    }
+  }
+
+  // tag 集合：横排 + 紧凑
+  .tags, .note-properties-tags {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.3em 0.5em;
+    align-items: center;
+    padding-left: 0;
+  }
+
+  a.tag-link {
+    padding: 0.05em 0.5em !important;
+    font-size: 0.75em !important;
+  }
+}
+
+// ─── 移动端 explorer drawer 样式（彻底重做）──────────
+@media (max-width: 800px) {
+  // 整个 sidebar 在 mobile-active 状态下成为右侧浮层 drawer
+  .left.sidebar {
+    // 默认状态：固定顶部，最小化
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(26, 24, 22, 0.92) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(176, 141, 87, 0.2);
+    padding: 0.6em 1em !important;
+  }
+
+  // 当 explorer 在 mobile 展开时，给 drawer 风格
+  .explorer[data-collapsed="false"] .explorer-content,
+  .explorer.expanded .explorer-content {
+    position: fixed;
+    top: 4em;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26, 24, 22, 0.97) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 999;
+    padding: 1.5em 1.5em !important;
+    overflow-y: auto;
+    border-top: 1px solid var(--bronze);
+
+    ul.overflow {
+      max-height: none !important;
+      font-size: 1.05em;
+
+      .nav-folder-title, .nav-file-title {
+        padding: 0.6em 0.4em !important;
+        font-size: 1em !important;
+      }
+    }
+  }
+}
+
+// ─── 专注模式（CSS-only via :target hack）──────────────
+// 用户访问 /any-page?focus 时，给 html 加 .focus-mode hack
+// 由于无 JS，提供链接 #focus 触发样式：
+:target.focus-toggle {
+  // placeholder
+}
+
+// 替代方案：用 prefers-color-scheme + media query 让大屏隐藏次要 chrome
+// 加一个 utility class，可以由用户从浏览器控制台启用：document.body.classList.add('focus-mode')
+body.focus-mode {
+  .left, .right { opacity: 0.15; transition: opacity 0.3s; }
+  .left:hover, .right:hover { opacity: 1; }
+  .center { max-width: 42em; }
+  article { font-size: 1.18rem; line-height: 2.3; }
+  footer { opacity: 0.3; }
+}
+
+// ─── 修正：properties 出现的顺序（首页 hero 应在 properties 之前）──
+// quartz 在 article 之上注入 .page-header (含 article-title 和 note-properties)，
+// 然后才是 article。home-hero 在 article 内首部。这是固定顺序。
+// 跳过强行换位（让 properties 和 article-title 一起在 hero 之上是合理的）
+
+// ─── 章节末"双链下一卷"高亮（CSS counter 提示）─────────
+.scroll-nav a.next::after {
+  content: "▷";
+  margin-left: 0.4em;
+  color: var(--bronze);
+  font-size: 1em;
+}
+
+// ─── 阅读模式 darkmode 按钮在 mobile 上不挤 ─────────────
+@media (max-width: 800px) {
+  .left.sidebar .flex-component {
+    flex-wrap: nowrap !important;
+    gap: 0.4em !important;
+  }
+
+  .left.sidebar .page-title {
+    font-size: 0.95em !important;
+    margin: 0 !important;
+    padding: 0.3em 0 !important;
+    border: none !important;
+    flex: 1 1 auto;
+    text-align: left !important;
+
+    &::after { display: none !important; }
+  }
+
+  // 顶部 hamburger 与按钮组同一行
+  .left.sidebar > * { display: inline-block; vertical-align: middle; }
+}
+
+// ─── 移动端：当 explorer 抽屉打开时背景遮罩 ─────────────
+@media (max-width: 800px) {
+  body:has(.explorer.expanded) {
+    overflow: hidden;
+  }
+  body:has(.explorer.expanded)::after {
+    content: "";
+    position: fixed;
+    inset: 4em 0 0 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 998;
+  }
+}
+
+// ─── 阅读时长：放在 H1 标题上方，不放在下方 ──────────
+.content-meta {
+  text-align: center !important;
+  margin-bottom: 0.4em !important;
+  font-style: italic;
+}
+
+// ═════════════════════════════════════════════════════════════
+// 第八轮：真读体验细节
+// ═════════════════════════════════════════════════════════════
+
+// ─── 1. alias 链接视觉标识：右上角古铜角标 ──────────
+article a.internal.alias {
+  position: relative;
+
+  &::after {
+    content: "⤴";
+    font-size: 0.55em;
+    color: var(--bronze);
+    opacity: 0.55;
+    margin-left: 0.15em;
+    vertical-align: super;
+    line-height: 1;
+    transition: opacity 0.2s, color 0.2s;
+  }
+
+  &:hover::after {
+    opacity: 1;
+    color: var(--inkRed);
+  }
+}
+
+// blockquote 内的 alias 链接保留指示，但更弱
+article blockquote a.internal.alias::after {
+  opacity: 0.35;
+}
+
+// ─── 2. 章末 hr 与下一章 H2 之间加缓冲 ──────────────────
+article hr + h2[id^="第"][id*="章"] {
+  margin-top: 4em !important;
+  padding-top: 1.2em !important;
+}
+
+// ─── 3. 增强章节小结引文（〔史笔〕、本部小结等）─────────
+// 用 :first-of-type 检查 strong 是否在引文首段开头
+article blockquote > p:first-child > strong:first-child {
+  // 已有徽记效果，本轮增强：给 strong 后面紧跟的标点（：、。）变弱
+}
+
+// ─── 4. 引文里的 markdown emphasis（如"赤光""星火"）增强 ─
+// 全角双引号"..." 是 ASCII " 转换或 markdown smart quotes，让它们更显眼
+article blockquote {
+  q, & > p {
+    // 中文引号视觉处理
+  }
+}
+
+// ─── 5. 章首段领字更优雅（避免被首字 punctuation 干扰）──
+article h2[id^="第"][id*="章"] + p::first-letter {
+  // 如果首字是数字（年代）或汉字标点，则跳过领字
+  // CSS 无法判断字符类型；让领字字号略小，避免被孤立"天"字干扰
+  font-size: 1.7em !important;
+  opacity: 0.7 !important;
+}
+
+// ─── 6. 章节切换时多一道 ❖ 分隔（视觉换章）────────────
+article hr + h2[id^="第"][id*="章"]::before {
+  content: "❖   ✦   ❖";
+  position: absolute;
+  top: -1.6em;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7em;
+  color: var(--bronze);
+  letter-spacing: 0.6em;
+  text-indent: 0.6em;
+  opacity: 0.4;
+  display: block !important;
+  text-align: center;
+  background: none !important;
+  pointer-events: none !important;  // 防止装饰菱形拦截 abbr/link 的点击
+  width: max-content;                // 限宽，仅覆盖装饰本身
+  white-space: nowrap;
+}
+
+// ─── 7. 章末加 "↑ 返回章首" 浮动按钮（CSS-only）────────
+// 由于无 JS 注入，这一项跳过。
+// 替代：给 H2 章节自身加 anchor，方便 URL hash 直跳。
+// Quartz 已默认给 H2 加 id, 用户可右键复制 anchor。
+// 加 CSS 微提示：H2 hover 时显示一个小"#"
+article h2 {
+  position: relative;
+
+  &::before:not(:has(content)) {
+    // no-op
+  }
+
+  // hover H2 时让 anchor icon 醒目
+  &:hover .internal[role="anchor"] {
+    opacity: 0.6 !important;
+  }
+}
+
+// ─── 8. blockquote 中正文里的链接（如"姨母韩氏"）更克制 ─
+article blockquote {
+  a.internal:not(.alias) {
+    border-bottom-style: dotted !important;
+  }
+}
+
+// ─── 9. 第一段领字与缩进配合（章首段不缩进，且领字微调）─
+article h2 + p {
+  text-indent: 0 !important;
+  margin-top: 1.4em !important;
+}
+
+// ─── 10. 防止 alias 链接里的 ⤴ 影响行高 ─────────────────
+article a.internal.alias {
+  display: inline;
+  line-height: inherit;
+}
+
+// ─── 11. wikilink 的 title attribute tooltip 由浏览器自带 ─
+// 加视觉提示：alias 链接 hover 时显示"→ 实际目标" pseudo tooltip
+article a.internal.alias {
+  &::before {
+    // 跳过 CSS tooltip，依赖浏览器 title=...
+  }
+}
+
+// ─── 12. 长引文之间的 ❖ 分隔在引文最后一段后加视觉缓冲 ─
+article blockquote + hr {
+  margin-top: 1.5em;
+}
+
+// ─── 13. 章节小结引文（本部小结/史笔）背景深一档，与正文叙事区分 ──
+article blockquote:has(> p:first-child > strong:first-child) {
+  background: linear-gradient(
+    to right,
+    rgba(176, 141, 87, 0.07) 0%,
+    rgba(176, 141, 87, 0.03) 100%
+  ) !important;
+  border-left-width: 4px !important;
+}
+
+// ─── 14. 卷尾"全书终""卷X终"装饰更明显 ────────────────
+.scroll-finis {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(176, 141, 87, 0.04) 50%,
+    transparent 100%
+  );
+  padding: 1.5em 0 !important;
+}
+
+// ─── 15. 列表项中的 alias 链接更克制（路径 A 列表里"正文·第一部 雀儿"）─
+article ol li, article ul li {
+  & > a.internal.alias::after {
+    opacity: 0.3;
+  }
+}
+
+// ─── 16. 链接焦点时古铜框（无障碍） ────────────────────
+article a.internal:focus-visible {
+  outline: 2px solid var(--bronze) !important;
+  outline-offset: 2px;
+  border-radius: 1px;
+}
+
+// ─── 17. CSS counter 视觉细节：H2 章节计数器右浮 padding 增加 ─
+article h2[id^="第"][id*="章"]::after {
+  padding: 0.15em 0.7em !important;
+  font-size: 0.48em !important;
+  top: 1em !important;
+  transform: none !important;
+}
+
+// ═════════════════════════════════════════════════════════════
+// 第九轮：路径 A 七部目录卡 + sidebar 章节导航
+// ═════════════════════════════════════════════════════════════
+
+// 仅对首页（index）的 ol 列表（路径 A）应用卡片样式
+body[data-slug="index"] article ol {
+  list-style: none;
+  padding-left: 0;
+  counter-reset: parts;
+
+  & > li {
+    counter-increment: parts;
+    position: relative;
+    padding: 0.9em 1em 0.9em 3.5em;
+    margin: 0.4em 0;
+    border-left: 2px solid rgba(176, 141, 87, 0.18);
+    background: linear-gradient(
+      to right,
+      rgba(176, 141, 87, 0.04) 0%,
+      transparent 60%
+    );
+    border-radius: 1px;
+    transition: all 0.2s ease;
+    line-height: 1.85;
+
+    &::before {
+      content: "卷 " counter(parts, cjk-heavenly-stem);
+      position: absolute;
+      left: 0.7em;
+      top: 1em;
+      font-family: var(--headerFont);
+      color: var(--bronze);
+      letter-spacing: 0.1em;
+      font-size: 0.85em;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    &::marker { content: none; }
+
+    &:hover {
+      border-left-color: var(--inkRed);
+      border-left-width: 3px;
+      padding-left: calc(3.5em - 1px);
+      background: linear-gradient(
+        to right,
+        rgba(138, 58, 58, 0.06) 0%,
+        transparent 60%
+      );
+      transform: translateX(2px);
+
+      &::before {
+        color: var(--inkRed);
+        opacity: 1;
+      }
+    }
+
+    // 第一个 link 是卷名，加重
+    & > a.internal:first-child {
+      font-family: var(--headerFont);
+      font-size: 1.05em;
+      letter-spacing: 0.06em;
+      color: var(--paperMist) !important;
+      font-weight: 500;
+    }
+  }
+}
+
+// 路径 B / 路径 C 的 ul 列表也美化
+body[data-slug="index"] article ul:not(.note-properties-list):not(.note-properties-tags):not(.toc-content) {
+  list-style: none;
+  padding-left: 0.5em;
+
+  & > li {
+    padding: 0.4em 0.8em 0.4em 1.6em;
+    margin: 0.3em 0;
+    position: relative;
+    background: linear-gradient(to right, rgba(176, 141, 87, 0.025) 0%, transparent 70%);
+
+    &::before {
+      content: "◇";
+      position: absolute;
+      left: 0.5em;
+      top: 0.5em;
+      color: var(--bronze);
+      font-size: 0.85em;
+      opacity: 0.6;
+    }
+
+    &:hover::before { color: var(--inkRed); opacity: 1; }
+    &::marker { content: none; }
+  }
+}
+
+// 第三大节"目录"下的列表保持简洁（与路径 A 区分）
+body[data-slug="index"] article h2#三-目录 ~ ul,
+body[data-slug="index"] article h2#三-目录 ~ ul ul {
+  & > li {
+    border: none !important;
+    background: transparent !important;
+    padding: 0.2em 0.5em !important;
+    margin: 0.2em 0 !important;
+    transform: none !important;
+
+    &::before { display: none !important; }
+
+    a.internal {
+      &:hover { color: var(--inkRed) !important; }
+    }
+  }
+}
+
+// ─── 章节计数 cjk 字符（甲乙丙...）适配，避免显示 0 ─
+// 注：cjk-heavenly-stem 仅支持 1-10，第七部 OK
+
+// ─── 路径标题强化（"路径 A · 当小说读"等）─────────────
+body[data-slug="index"] article p > strong:first-child:only-child,
+body[data-slug="index"] article p > strong:first-child:nth-last-child(2) {
+  // 不一定生效，保留 hook
+}
+
+// ─── 第九轮：sidebar 显示当前所在的"卷 N"上下文 ────────
+// 这需要 JS 注入，跳过。但加 CSS：让 explorer 中"正文"文件夹默认展开（更易发现）─
+// 注：quartz 的 explorer state 由 localStorage 控制，CSS 不能强制展开。跳过。
+
+// ─── 第九轮：bottom-fixed "前往下一章" 按钮（CSS-only via :target hack 不行）─
+// 跳过。保留 scroll-nav 作为唯一 prev/next。
+
+// ─── 第九轮：article 内"路径列表"项目数字使用大写汉数 ─
+// 已通过 cjk-heavenly-stem 实现
+
+// ─── 第九轮：首页 hero 与 cta 区视觉收紧 ─────────────
+body[data-slug="index"] .home-cta {
+  margin-top: 2em;
+  margin-bottom: 2.5em;
+}
+
+// ─── 第九轮：所有 article 末尾的"卷尾"加底部小空间 ────
+article > *:last-child {
+  margin-bottom: 1em;
+}
+
+// ═════════════════════════════════════════════════════════════
+// 第十轮：历史专名 hover 注释 (基础设施)
+// ═════════════════════════════════════════════════════════════
+
+// 滚动锚点跳转时，顶部留足空间防止 abbr tooltip 被裁
+html { scroll-padding-top: 180px; }
+
+// abbr[title]：让历史专名 hover 时显示古铜 tooltip
+article abbr[title] {
+  cursor: help;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--bronze);
+  position: relative;
+  color: var(--paperMist);
+  // 古铜小角标
+  &::after {
+    content: "•";
+    font-size: 0.55em;
+    color: var(--bronze);
+    margin-left: 0.1em;
+    vertical-align: super;
+    opacity: 0.65;
+    line-height: 1;
+  }
+
+  // 自定义 tooltip
+  &::before {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-0.4em);
+    // 暗色：深底米白字；亮色：米白底深字（始终高对比度）
+    background: var(--steleDark);
+    border: 1px solid var(--bronze);
+    color: #d4cdb8;  // 固定米白色文字，与深底高对比
+    padding: 0.6em 1em;
+    font-family: var(--bodyFont);
+    font-size: 0.88rem;
+    letter-spacing: 0.02em;
+    line-height: 1.7;
+    white-space: nowrap;
+    max-width: 22em;
+    z-index: 1000;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  // 小三角箭头指向词
+  & {
+    --tooltip-arrow-color: var(--bronze);
+  }
+
+  &:hover::before, &:focus::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-0.2em);
+  }
+
+  &:hover, &:focus {
+    color: var(--inkRed);
+    border-bottom-color: var(--inkRed);
+    &::after { color: var(--inkRed); opacity: 1; }
+  }
+}
+
+// 长文本 tooltip 自动换行
+article abbr[title]:hover::before {
+  // 长 title 用 white-space: normal
+}
+article abbr[title][data-long]::before,
+article abbr[title]:not([title*=" "]):not([title*="·"])::before {
+  // 短词保持单行；长词用 normal
+}
+
+// 长 tooltip 强制换行（title 字符数 > 15 时由 attribute 触发）
+article abbr[title]::before {
+  white-space: normal;
+  min-width: 12em;
+  text-align: center;
+}
+
+// 移动端：abbr tap 体验
+// 现在所有 abbr 都已加 tabindex="0"，可以 focus 弹自定义 tooltip
+@media (hover: none) {
+  article abbr[title] {
+    background: rgba(176, 141, 87, 0.08);
+    border-radius: 2px;
+    padding: 0 0.15em;
+    -webkit-touch-callout: default;
+    touch-action: manipulation;
+    cursor: pointer;
+  }
+  article abbr[title]:active {
+    background: rgba(138, 58, 58, 0.18);
+    color: var(--inkRed) !important;
+  }
+  // tap 时（:focus 持续显示直到再点别处）
+  article abbr[title]:focus::before,
+  article abbr[title]:active::before {
+    opacity: 1 !important;
+    transform: translateX(-50%) translateY(-0.2em);
+  }
+  article abbr[title]:focus {
+    outline: 2px solid var(--bronze);
+    outline-offset: 1px;
+  }
+}
+
+// ─── tooltip 位置自适应（左右越界时反向）─────────────
+// CSS 无法精确判断越界，但可以给特殊 class 的 abbr 用反向 tooltip
+article abbr.tip-right[title]::before {
+  left: 0 !important;
+  transform: translateY(-0.4em);
+}
+article abbr.tip-right[title]:hover::before {
+  transform: translateY(-0.2em);
+}
+
+article abbr.tip-left[title]::before {
+  left: auto;
+  right: 0;
+  transform: translateY(-0.4em);
+}
+article abbr.tip-left[title]:hover::before {
+  transform: translateY(-0.2em);
+}
+
+// ─── Tag 聚合页 / Properties 内 tags 框 ─────────────────
+// 去除 quartz 默认 ul.tags 的 circle 标记，让 tag 框横向 inline 排列更紧凑
+ul.tags, ul.tags li {
+  list-style: none !important;
+  list-style-type: none !important;
+  margin-left: 0;
+  padding-left: 0;
+}
+// section-ul / section-li（tag 聚合页的笔记列表）也去除圆点
+ul.section-ul, ul.section-ul > li {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+// ─── 亮色模式 mobile sidebar 颜色覆盖 ──────────────────
+// 暗色下 sidebar 用 rgba(26,24,22) 深色合适；
+// 亮色下必须覆盖为米黄底，否则深色 sidebar 上的古铜深字看不见
+@media (max-width: 800px) {
+  :root[saved-theme="light"] .left.sidebar,
+  :root[saved-theme="light"] .right.sidebar {
+    background: rgba(244, 235, 215, 0.94) !important;
+    border-bottom: 1px solid rgba(122, 90, 48, 0.25);
+  }
+  :root[saved-theme="light"] .search-container {
+    background: rgba(244, 235, 215, 0.97) !important;
+  }
+}
+
+// ─── 亮色模式：覆盖所有剩余的深色硬编码 ─────────────────
+// popover 预览框：亮色用米白旧纸底，深棕字（与文章一致）
+:root[saved-theme="light"] .popover {
+  background: rgba(244, 235, 215, 0.97) !important;
+}
+:root[saved-theme="light"] .popover .popover-inner {
+  color: var(--dark) !important;
+}
+// darkmode 按钮自身 tooltip：亮色下用深底米白字（与 abbr tooltip 一致）
+:root[saved-theme="light"] .darkmode::after {
+  color: #d4cdb8 !important;
+}
+// back-to-top 按钮：亮色下用深底米白图标（保持可识别）
+:root[saved-theme="light"] .back-to-top {
+  color: #d4cdb8 !important;
+}
+
+// ─── 反向链接中"回首页"链接特别突出（陌生读者入口） ────
+// 任何指向 index 的反链都是「回到全书总览」，给它朱印徽记 + 朱砂下划线
+// 精准匹配：用 href 值识别（相对路径 ../ ./ / 或绝对 /index）
+// 不用 li:first-child 兜底，避免误高亮其他第一项链接
+.backlinks a[href="../"],
+.backlinks a[href="./"],
+.backlinks a[href="/"],
+.backlinks a[href="/index"],
+.backlinks a[href$="/00-总览·阅读地图"] {
+  display: inline-block;
+  font-weight: 600;
+  color: var(--inkRed) !important;
+  border-bottom: 2px solid var(--inkRed);
+  padding-bottom: 1px;
+  position: relative;
+
+  &::before {
+    content: "❖ ";
+    color: var(--inkRed);
+    opacity: 0.7;
+    margin-right: 0.15em;
+    font-size: 0.85em;
+  }
+  &::after {
+    content: " ↩";
+    color: var(--inkRed);
+    margin-left: 0.2em;
+    font-size: 0.85em;
+    opacity: 0.7;
+  }
+  &:hover {
+    background: rgba(138, 58, 58, 0.08);
+    padding: 0 0.3em;
+    margin: 0 -0.3em;
+  }
+}
+
+
+

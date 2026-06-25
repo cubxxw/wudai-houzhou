@@ -1,0 +1,14 @@
+# 郭威·乱世为龙 · 五代后周史·双链阅读
+# 部署说明：本文件需要复制到站点根目录（如 public/robots.txt），
+# 否则搜索引擎在 /robots.txt 处找不到它。
+
+User-agent: *
+Allow: /
+
+# 禁止抓取每页自动生成的 og-image.webp（每页一张，体积大且重复）
+# 仅保留首页 og-image 用于社交分享
+Disallow: /*-og-image.webp$
+Allow: /index-og-image.webp
+
+# Sitemap 位置（部署后替换 example.com 为真实域名）
+# Sitemap: https://example.com/sitemap.xml

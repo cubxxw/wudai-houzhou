@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npx quartz build",
+  "outputDirectory": "public",
+  "installCommand": "npm ci && npx quartz plugin install",
+  "framework": null,
+  "trailingSlash": true,
+  "cleanUrls": true
+}
