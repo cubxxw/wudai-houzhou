@@ -7,7 +7,7 @@ configuration:
   analytics:
     provider: null
   locale: zh-CN
-  baseUrl: localhost:8080
+  baseUrl: wudai.cubxxw.com
   ignorePatterns:
     - private
     - templates
