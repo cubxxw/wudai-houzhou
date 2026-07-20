@@ -1,0 +1,53 @@
+{
+  "name": "@wudai/github-link",
+  "version": "1.0.0",
+  "description": "Toolbar button linking to the site's source repository on GitHub",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "sideEffects": false,
+  "peerDependencies": {
+    "preact": "^10.0.0"
+  },
+  "quartz": {
+    "name": "github-link",
+    "displayName": "GitHub Link",
+    "category": "component",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "dependencies": [],
+    "defaultOrder": 50,
+    "defaultEnabled": true,
+    "defaultOptions": {
+      "url": "https://github.com/cubxxw/wudai-houzhou",
+      "title": "在 GitHub 上查看本站源码"
+    },
+    "components": {
+      "GitHubLink": {
+        "displayName": "GitHub Link",
+        "defaultPosition": "left",
+        "defaultPriority": 40
+      }
+    },
+    "optionSchema": {
+      "url": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      }
+    }
+  }
+}

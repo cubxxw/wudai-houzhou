@@ -188,6 +188,16 @@ plugins:
       position: left
       priority: 35
       group: toolbar
+  # 本地组件：以符号链接方式加载，部署时不联网、不构建，故不会成为构建失败点
+  - source: ./plugins/github-link
+    enabled: true
+    options:
+      url: https://github.com/cubxxw/wudai-houzhou
+      title: 在 GitHub 上查看本站源码
+    layout:
+      position: left
+      priority: 40
+      group: toolbar
   - source: github:quartz-community/breadcrumbs
     enabled: true
     layout:
@@ -206,8 +216,8 @@ plugins:
     enabled: true
     options:
       links:
-        GitHub: https://github.com/jackyzha0/quartz
-        Discord Community: https://discord.gg/cRFFHYye7t
+        本站源码: https://github.com/cubxxw/wudai-houzhou
+        Quartz: https://github.com/jackyzha0/quartz
   - source: github:quartz-community/recent-notes
     enabled: false
   - source: github:quartz-community/spacer
