@@ -4,7 +4,13 @@ import { CSSResourceToStyleElement, JSResourceToScriptElement } from "../util/re
 import { googleFontHref, googleFontSubsetHref } from "../util/theme"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { unescapeHTML } from "../util/escape"
-import { CustomOgImagesEmitterName } from "../../.quartz/plugins"
+
+// Emitter name exported by the optional `og-image` plugin. Inlined rather than
+// imported from `.quartz/plugins` so the build does not depend on that plugin
+// being installed — importing it forced every plugin to be fetched and built at
+// deploy time, and a single failure broke the whole build.
+const CustomOgImagesEmitterName = "CustomOgImages"
+
 export default (() => {
   const Head: QuartzComponent = ({
     cfg,
