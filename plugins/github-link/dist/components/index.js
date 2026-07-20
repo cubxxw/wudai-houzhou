@@ -11,15 +11,21 @@ const style = `
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Match the 36x36 box of the sibling toolbar buttons (darkmode, reader-mode)
+     so the icons share a baseline and an equal tap target. */
+  width: 2.25rem;
+  height: 2.25rem;
   padding: 0;
   border: none;
   background: none;
-  color: var(--darkgray);
+  /* --secondary matches the darkmode / reader-mode icons in the same toolbar
+     group, and re-themes correctly in both light and dark mode. */
+  color: var(--secondary);
   cursor: pointer;
   flex-shrink: 0;
 }
 .github-link:hover {
-  color: var(--secondary);
+  color: var(--tertiary);
 }
 .github-link svg {
   width: 1.4rem;
